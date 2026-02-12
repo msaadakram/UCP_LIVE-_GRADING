@@ -558,90 +558,6 @@ export function HomePage() {
                 </div>
             </section>
 
-            {/* How It Works */}
-            <section className="py-20 px-4 sm:px-6 lg:px-8 bg-muted/30">
-                <div className="max-w-7xl mx-auto">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.6 }}
-                        className="text-center mb-16"
-                    >
-                        <Badge className="mb-4">How It Works</Badge>
-                        <h2 className="text-4xl mb-4">Simple Steps to Get Started</h2>
-                        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                            Follow these easy steps to integrate UCP Live Grading into your workflow.
-                        </p>
-                    </motion.div>
-
-                    <div className="grid md:grid-cols-3 gap-8">
-                        {[
-                            {
-                                step: 1,
-                                icon: Zap,
-                                title: "Install the Extension",
-                                description: "Download and install the UCP Live Grading Chrome Extension from the Chrome Web Store.",
-                                color: "from-yellow-500 to-orange-500",
-                            },
-                            {
-                                step: 2,
-                                icon: Shield,
-                                title: "Secure Your Data",
-                                description: "Enterprise-grade security ensures your data is protected with end-to-end encryption.",
-                                color: "from-green-500 to-emerald-500",
-                            },
-                            {
-                                step: 3,
-                                icon: Clock,
-                                title: "Start Grading",
-                                description: "Automate repetitive tasks and focus on providing meaningful feedback to students.",
-                                color: "from-blue-500 to-cyan-500",
-                            },
-                            {
-                                step: 4,
-                                icon: Users,
-                                title: "Collaborate with Team",
-                                description: "Work seamlessly with co-teachers and share grading rubrics across departments.",
-                                color: "from-purple-500 to-pink-500",
-                            },
-                            {
-                                step: 5,
-                                icon: BarChart3,
-                                title: "Analyze Performance",
-                                description: "Gain insights into student performance with comprehensive analytics and reporting.",
-                                color: "from-red-500 to-orange-500",
-                            },
-                            {
-                                step: 6,
-                                icon: Target,
-                                title: "Customize Rubrics",
-                                description: "Create and reuse custom grading rubrics tailored to your specific requirements.",
-                                color: "from-indigo-500 to-purple-500",
-                            },
-                        ].map((feature, index) => (
-                            <motion.div
-                                key={index}
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: index * 0.1, duration: 0.6 }}
-                            >
-                                <Card className="p-6 h-full hover:shadow-lg transition-shadow border-2 hover:border-purple-200">
-                                    <div
-                                        className={`w-12 h-12 rounded-lg bg-gradient-to-br ${feature.color} flex items-center justify-center mb-4`}
-                                    >
-                                        <feature.icon className="w-6 h-6 text-white" />
-                                    </div>
-                                    <h3 className="mb-2">{feature.title}</h3>
-                                    <p className="text-muted-foreground">{feature.description}</p>
-                                </Card>
-                            </motion.div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
             {/* Donation Section */}
             <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 dark:from-pink-950/20 dark:via-purple-950/20 dark:to-blue-950/20">
                 <div className="max-w-7xl mx-auto">
@@ -948,6 +864,90 @@ export function HomePage() {
                                 </div>
                             </Card>
                         </motion.div>
+                    </div>
+                </div>
+            </section>
+
+            {/* How It Works */}
+            <section className="py-20 px-4 sm:px-6 lg:px-8 bg-muted/30">
+                <div className="max-w-7xl mx-auto">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.6 }}
+                        className="text-center mb-16"
+                    >
+                        <Badge className="mb-4">How It Works</Badge>
+                        <h2 className="text-4xl mb-4">Simple Steps to Get Started</h2>
+                        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                            Follow these easy steps to integrate UCP Live Grading into your workflow.
+                        </p>
+                    </motion.div>
+
+                    <div className="grid md:grid-cols-3 gap-8">
+                        {[
+                            {
+                                step: 1,
+                                icon: Zap,
+                                title: "Install the Extension",
+                                description: "Download and install the UCP Live Grading Chrome Extension from the Chrome Web Store.",
+                                color: "from-yellow-500 to-orange-500",
+                            },
+                            {
+                                step: 2,
+                                icon: Shield,
+                                title: "Secure Your Data",
+                                description: "Enterprise-grade security ensures your data is protected with end-to-end encryption.",
+                                color: "from-green-500 to-emerald-500",
+                            },
+                            {
+                                step: 3,
+                                icon: Clock,
+                                title: "Start Grading",
+                                description: "Automate repetitive tasks and focus on providing meaningful feedback to students.",
+                                color: "from-blue-500 to-cyan-500",
+                            },
+                            {
+                                step: 4,
+                                icon: Users,
+                                title: "Collaborate with Team",
+                                description: "Work seamlessly with co-teachers and share grading rubrics across departments.",
+                                color: "from-purple-500 to-pink-500",
+                            },
+                            {
+                                step: 5,
+                                icon: BarChart3,
+                                title: "Analyze Performance",
+                                description: "Gain insights into student performance with comprehensive analytics and reporting.",
+                                color: "from-red-500 to-orange-500",
+                            },
+                            {
+                                step: 6,
+                                icon: Target,
+                                title: "Customize Rubrics",
+                                description: "Create and reuse custom grading rubrics tailored to your specific requirements.",
+                                color: "from-indigo-500 to-purple-500",
+                            },
+                        ].map((feature, index) => (
+                            <motion.div
+                                key={index}
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: index * 0.1, duration: 0.6 }}
+                            >
+                                <Card className="p-6 h-full hover:shadow-lg transition-shadow border-2 hover:border-purple-200">
+                                    <div
+                                        className={`w-12 h-12 rounded-lg bg-gradient-to-br ${feature.color} flex items-center justify-center mb-4`}
+                                    >
+                                        <feature.icon className="w-6 h-6 text-white" />
+                                    </div>
+                                    <h3 className="mb-2">{feature.title}</h3>
+                                    <p className="text-muted-foreground">{feature.description}</p>
+                                </Card>
+                            </motion.div>
+                        ))}
                     </div>
                 </div>
             </section>
