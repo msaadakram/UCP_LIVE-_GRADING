@@ -155,7 +155,7 @@ export function HomePage() {
                                 transition={{ delay: 0.3, duration: 0.6 }}
                                 className="text-5xl md:text-6xl mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-400 dark:via-purple-400 dark:to-pink-400 bg-clip-text text-transparent animate-gradient min-h-[120px] md:min-h-[140px]"
                             >
-                                <TypewriterText text="Grade Smarter, Not Harder. Develop By MUHAMAMD SAAD AKRAM!!" delay={200} speed={50} />
+                                <TypewriterText text="Grade Smarter, Not Harder. Develop By MUHAMMAD SAAD AKRAM!!" delay={200} speed={50} />
                             </motion.h1>
                             <motion.p
                                 initial={{ opacity: 0, y: 20 }}
