@@ -73,7 +73,7 @@ export function DonatePage() {
             <Navigation />
 
             {/* Hero */}
-            <section className="pt-32 pb-12 px-4 sm:px-6 lg:px-8 text-center">
+            <section className="pt-28 sm:pt-32 pb-12 px-4 sm:px-6 lg:px-8 text-center">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -91,7 +91,7 @@ export function DonatePage() {
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
                         transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-                        className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-pink-500 to-red-500 dark:from-pink-600 dark:to-red-600 mb-8 shadow-2xl"
+                        className="inline-flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-br from-pink-500 to-red-500 dark:from-pink-600 dark:to-red-600 mb-8 shadow-2xl"
                     >
                         <motion.div
                             animate={{
@@ -103,7 +103,7 @@ export function DonatePage() {
                                 ease: "easeInOut",
                             }}
                         >
-                            <Heart className="w-12 h-12 text-white fill-white" />
+                            <Heart className="w-10 h-10 sm:w-12 sm:h-12 text-white fill-white" />
                         </motion.div>
                     </motion.div>
 
@@ -111,10 +111,10 @@ export function DonatePage() {
                         <Sparkles className="w-3 h-3 mr-1" />
                         Community Supported
                     </Badge>
-                    <h1 className="text-5xl mb-6 bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 dark:from-pink-400 dark:via-purple-400 dark:to-blue-400 bg-clip-text text-transparent">
+                    <h1 className="text-3xl sm:text-4xl md:text-5xl mb-6 bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 dark:from-pink-400 dark:via-purple-400 dark:to-blue-400 bg-clip-text text-transparent">
                         Support UCP Live Grading
                     </h1>
-                    <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                    <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
                         Your donation helps us maintain, improve, and expand UCP Live Grading for students and educators everywhere.
                     </p>
                 </motion.div>
@@ -122,20 +122,20 @@ export function DonatePage() {
 
             {/* Donation Content */}
             <section className="py-12 px-4 sm:px-6 lg:px-8">
-                <div className="grid lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
+                <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 max-w-6xl mx-auto">
                     {/* Donation Form */}
                     <motion.div
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.3, duration: 0.6 }}
                     >
-                        <Card className="p-8 dark:bg-card/80 backdrop-blur-sm border-2 dark:border-border/50">
+                        <Card className="p-5 sm:p-6 lg:p-8 dark:bg-card/80 backdrop-blur-sm border-2 dark:border-border/50">
                             <h2 className="mb-6">Make a Donation</h2>
 
                             {/* Predefined Amounts */}
                             <div className="mb-6">
                                 <label className="block mb-3">Select Amount</label>
-                                <div className="grid grid-cols-3 gap-3">
+                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                                     {predefinedAmounts.map((amount) => (
                                         <motion.button
                                             key={amount}
@@ -150,7 +150,7 @@ export function DonatePage() {
                                                     : "border-border hover:border-purple-300 dark:hover:border-purple-600"
                                                 }`}
                                         >
-                                            <div className="text-2xl font-bold">${amount}</div>
+                                            <div className="text-xl sm:text-2xl font-bold">${amount}</div>
                                         </motion.button>
                                     ))}
                                 </div>
@@ -272,7 +272,7 @@ export function DonatePage() {
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-3 gap-4 mt-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mt-4">
                                 {[
                                     { icon: Shield, label: "Secure" },
                                     { icon: CheckCircle2, label: "Verified" },

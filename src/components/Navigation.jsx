@@ -37,9 +37,9 @@ export function Navigation() {
             className="fixed top-0 left-0 right-0 z-50 bg-background/80 dark:bg-background/95 backdrop-blur-lg border-b border-border/50 dark:border-border shadow-sm dark:shadow-purple-900/10"
         >
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex justify-between items-center h-16">
+                <div className="flex justify-between items-center h-14 sm:h-16 gap-2">
                     {/* Logo */}
-                    <Link to="/" className="flex items-center gap-2 group">
+                    <Link to="/" className="flex items-center gap-2 group min-w-0">
                         <motion.div
                             whileHover={{ rotate: 360 }}
                             transition={{ duration: 0.6 }}
@@ -47,7 +47,10 @@ export function Navigation() {
                         >
                             <GraduationCap className="w-6 h-6 text-white" />
                         </motion.div>
-                        <span className="font-semibold text-xl bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
+                        <span
+                            className="font-semibold text-base sm:text-lg lg:text-xl bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent truncate max-w-[10.5rem] sm:max-w-none"
+                            title="UCP Live Grading"
+                        >
                             UCP Live Grading
                         </span>
                     </Link>

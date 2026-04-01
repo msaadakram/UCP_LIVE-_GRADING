@@ -153,7 +153,7 @@ export function HomePage() {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.3, duration: 0.6 }}
-                                className="text-5xl md:text-6xl mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-400 dark:via-purple-400 dark:to-pink-400 bg-clip-text text-transparent animate-gradient min-h-[120px] md:min-h-[140px]"
+                                className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-400 dark:via-purple-400 dark:to-pink-400 bg-clip-text text-transparent animate-gradient min-h-[90px] sm:min-h-[110px] md:min-h-[140px]"
                             >
                                 <TypewriterText text="Grade Smarter, Not Harder. Develop By MUHAMMAD SAAD AKRAM!!" delay={200} speed={50} />
                             </motion.h1>
@@ -161,7 +161,7 @@ export function HomePage() {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.4, duration: 0.6 }}
-                                className="text-xl text-muted-foreground mb-8"
+                                className="text-base sm:text-lg md:text-xl text-muted-foreground mb-8"
                             >
                                 Transform your grading workflow with real-time evaluation,
                                 intelligent insights, and seamless collaboration. Built for
@@ -222,7 +222,7 @@ export function HomePage() {
                             </motion.div>
 
                             {/* Stats */}
-                            <div className="grid grid-cols-3 gap-8 mt-12">
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-8 mt-10 sm:mt-12 text-center sm:text-left">
                                 {[
                                     { value: "10K+", label: "Installer", delay: 0.6, gradient: "from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400" },
                                     { value: "70K+", label: "Course Data", delay: 0.7, gradient: "from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400" },
@@ -236,7 +236,7 @@ export function HomePage() {
                                         whileHover={{ y: -5 }}
                                         className="relative group"
                                     >
-                                        <div className={`text-3xl font-semibold bg-gradient-to-r ${stat.gradient} bg-clip-text text-transparent`}>
+                                        <div className={`text-2xl sm:text-3xl font-semibold bg-gradient-to-r ${stat.gradient} bg-clip-text text-transparent`}>
                                             {stat.value}
                                         </div>
                                         <div className="text-sm text-muted-foreground">{stat.label}</div>
@@ -294,10 +294,10 @@ export function HomePage() {
                         className="text-center mb-16"
                     >
                         <Badge className="mb-4">Chrome Extension</Badge>
-                        <h2 className="text-4xl md:text-5xl mb-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                        <h2 className="text-3xl sm:text-4xl md:text-5xl mb-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
                             Grade Anywhere, Anytime
                         </h2>
-                        <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+                        <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
                             Our powerful Chrome extension brings live grading directly to your browser.
                             Grade assignments, provide instant feedback, and track student progress without leaving your current tab.
                         </p>
@@ -317,7 +317,7 @@ export function HomePage() {
                                 className="relative"
                             >
                                 <div className="absolute -inset-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-3xl opacity-20 blur-3xl animate-pulse" />
-                                <Card className="p-8 relative overflow-hidden border-2 border-purple-200 dark:border-purple-800/50 dark:bg-card/50 backdrop-blur-sm">
+                                <Card className="p-4 sm:p-6 lg:p-8 relative overflow-hidden border-2 border-purple-200 dark:border-purple-800/50 dark:bg-card/50 backdrop-blur-sm">
                                     <motion.div
                                         initial={{ rotate: 0 }}
                                         animate={{ rotate: [0, 5, -5, 0] }}
@@ -386,7 +386,7 @@ export function HomePage() {
                                             <feature.icon className="w-7 h-7 text-white" />
                                         </motion.div>
                                         <div>
-                                            <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
+                                            <h3 className="text-lg sm:text-xl font-semibold mb-2">{feature.title}</h3>
                                             <p className="text-muted-foreground">{feature.description}</p>
                                         </div>
                                     </div>
@@ -485,7 +485,7 @@ export function HomePage() {
                                 className="absolute -inset-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-500 dark:via-purple-500 dark:to-pink-500 rounded-3xl opacity-20 dark:opacity-30 blur-2xl"
                             />
 
-                            <Card className="p-10 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-blue-950/50 dark:via-purple-950/50 dark:to-pink-950/50 border-2 border-purple-200 dark:border-purple-700/50 relative backdrop-blur-sm shadow-2xl">
+                            <Card className="p-6 sm:p-8 md:p-10 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-blue-950/50 dark:via-purple-950/50 dark:to-pink-950/50 border-2 border-purple-200 dark:border-purple-700/50 relative backdrop-blur-sm shadow-2xl">
                                 {/* Sparkle decorations */}
                                 <motion.div
                                     animate={{
@@ -528,10 +528,10 @@ export function HomePage() {
                                         <Sparkles className="w-10 h-10 text-white" />
                                     </motion.div>
 
-                                    <h3 className="text-3xl font-bold mb-3 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-400 dark:via-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
+                                    <h3 className="text-2xl sm:text-3xl font-bold mb-3 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-400 dark:via-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
                                         Ready to Get Started?
                                     </h3>
-                                    <p className="text-foreground/80 dark:text-foreground/70 mb-6 max-w-md mx-auto text-lg">
+                                    <p className="text-foreground/80 dark:text-foreground/70 mb-6 max-w-md mx-auto text-base sm:text-lg">
                                         Install the UCP Live Grading Chrome Extension and start grading smarter today.
                                     </p>
                                     <motion.div
@@ -539,12 +539,19 @@ export function HomePage() {
                                         whileTap={{ scale: 0.95 }}
                                     >
                                         <Button
+                                            asChild
                                             size="lg"
-                                            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 dark:from-blue-500 dark:to-purple-500 dark:hover:from-blue-600 dark:hover:to-purple-600 shadow-xl hover:shadow-2xl transition-all text-lg px-8 py-6"
+                                            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 dark:from-blue-500 dark:to-purple-500 dark:hover:from-blue-600 dark:hover:to-purple-600 shadow-xl hover:shadow-2xl transition-all text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6"
                                         >
-                                            <Sparkles className="w-5 h-5 mr-2" />
-                                            Install Chrome Extension
-                                            <ArrowRight className="w-5 h-5 ml-2" />
+                                            <a
+                                                href="https://chromewebstore.google.com/detail/jffoifnchlblakelloghlmjldkpniglj?utm_source=item-share-cb"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                            >
+                                                <Sparkles className="w-5 h-5 mr-2" />
+                                                Install Chrome Extension
+                                                <ArrowRight className="w-5 h-5 ml-2" />
+                                            </a>
                                         </Button>
                                     </motion.div>
 
@@ -580,10 +587,10 @@ export function HomePage() {
                         <Badge className="mb-4 bg-pink-100 dark:bg-pink-900/40 text-pink-700 dark:text-pink-300 border border-pink-200 dark:border-pink-800">
                             Support Development
                         </Badge>
-                        <h2 className="text-5xl mb-6 bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 dark:from-pink-400 dark:via-purple-400 dark:to-blue-400 bg-clip-text text-transparent">
+                        <h2 className="text-3xl sm:text-4xl md:text-5xl mb-6 bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 dark:from-pink-400 dark:via-purple-400 dark:to-blue-400 bg-clip-text text-transparent">
                             Help Us Build Better Tools
                         </h2>
-                        <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+                        <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
                             UCP Live Grading is built by a passionate team of developers who
                             believe in making education better. Your support helps us continue
                             developing new features and maintaining the platform.
@@ -598,13 +605,13 @@ export function HomePage() {
                             viewport={{ once: true }}
                             transition={{ delay: 0.3, duration: 0.6 }}
                         >
-                            <Card className="p-8 dark:bg-card/80 backdrop-blur-sm border-2 dark:border-border/50">
+                            <Card className="p-5 sm:p-6 lg:p-8 dark:bg-card/80 backdrop-blur-sm border-2 dark:border-border/50">
                                 <h2 className="mb-6">Make a Donation</h2>
 
                                 {/* Predefined Amounts */}
                                 <div className="mb-6">
                                     <label className="block mb-3">Select Amount</label>
-                                    <div className="grid grid-cols-3 gap-3">
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                                         {predefinedAmounts.map((amount) => (
                                             <motion.button
                                                 key={amount}
@@ -619,7 +626,7 @@ export function HomePage() {
                                                     : "border-border hover:border-purple-300 dark:hover:border-purple-600"
                                                     }`}
                                             >
-                                                <div className="text-2xl font-bold">${amount}</div>
+                                                <div className="text-xl sm:text-2xl font-bold">${amount}</div>
                                             </motion.button>
                                         ))}
                                     </div>
@@ -664,7 +671,7 @@ export function HomePage() {
 
                                 <div className="mb-6">
                                     <label className="block mb-2">Payment Method</label>
-                                    <div className="grid grid-cols-3 gap-3">
+                                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                                         {paymentMethods.map((method) => (
                                             <motion.button
                                                 key={method.id}
@@ -879,8 +886,8 @@ export function HomePage() {
                         className="text-center mb-16"
                     >
                         <Badge className="mb-4">How It Works</Badge>
-                        <h2 className="text-4xl mb-4">Simple Steps to Get Started</h2>
-                        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                        <h2 className="text-3xl sm:text-4xl mb-4">Simple Steps to Get Started</h2>
+                        <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
                             Follow these easy steps to integrate UCP Live Grading into your workflow.
                         </p>
                     </motion.div>
@@ -961,13 +968,13 @@ export function HomePage() {
                         viewport={{ once: true }}
                         transition={{ duration: 0.6 }}
                     >
-                        <Card className="p-12 text-center bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 text-white border-0 overflow-hidden relative">
+                        <Card className="p-6 sm:p-8 md:p-12 text-center bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 text-white border-0 overflow-hidden relative">
                             <div className="absolute inset-0 bg-black/10" />
                             <div className="relative z-10">
-                                <h2 className="text-4xl mb-4 text-white">
+                                <h2 className="text-2xl sm:text-3xl md:text-4xl mb-4 text-white">
                                     Ready to Transform Your Grading?
                                 </h2>
-                                <p className="text-xl mb-8 text-white/90">
+                                <p className="text-base sm:text-lg md:text-xl mb-8 text-white/90">
                                     Join thousands of educators who are already saving time and
                                     improving student outcomes.
                                 </p>

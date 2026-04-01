@@ -38,7 +38,7 @@ export function Footer() {
             icon: MessageCircle,
             label: "WhatsApp",
             value: "+92 346 0047018",
-            href: "https://wa.me/923460047018",
+            href: "https://wa.me/923460047018/",
         },
         {
             icon: Github,
@@ -66,10 +66,10 @@ export function Footer() {
                 />
             </div>
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative z-10">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12 relative z-10">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                     {/* Brand */}
-                    <div className="space-y-4 md:col-span-2">
+                    <div className="space-y-4 sm:col-span-2 lg:col-span-2">
                         <div className="flex items-center gap-2">
                             <motion.div
                                 whileHover={{ rotate: 360 }}
@@ -106,7 +106,7 @@ export function Footer() {
                                     </div>
                                     <div className="flex-1">
                                         <div className="text-xs text-muted-foreground">{contact.label}</div>
-                                        <div className="text-sm font-medium">{contact.value}</div>
+                                        <div className="text-sm font-medium break-all">{contact.value}</div>
                                     </div>
                                     <ExternalLink className="w-3 h-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
                                 </motion.a>
@@ -181,7 +181,7 @@ export function Footer() {
                             </p>
                         </div>
 
-                        <div className="flex gap-3">
+                        <div className="flex flex-wrap justify-center md:justify-end gap-3">
                             {socialLinks.map((link, index) => (
                                 <motion.a
                                     key={index}
