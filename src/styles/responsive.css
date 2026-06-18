@@ -1,0 +1,276 @@
+/* ═══════════════════════════════════════════════
+   UCP_LIVE_GRADING — Global Responsive Stylesheet
+   Mobile-first, 375px → 1440px+
+   ══════════════════════════════════════════════ */
+
+/* ─── Reset & Base ─── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: none; text-size-adjust: none; }
+body { min-height: 100dvh; -webkit-font-smoothing: antialiased; }
+img, canvas, svg { display: block; max-width: 100%; }
+
+/* ─── CSS Variables ─── */
+:root {
+  --nav-h: 64px;
+  --page-px: clamp(1rem, 4vw, 2rem);
+  --content-max: 960px;
+  --content-wide: 1200px;
+  --green: #00e696;
+  --green-dim: rgba(0,230,150,0.6);
+  --green-muted: rgba(0,230,150,0.12);
+  --surface: rgba(5,15,22,0.88);
+  --border: rgba(0,230,150,0.15);
+  --text: #e8f5f0;
+  --text-muted: rgba(120,200,160,0.7);
+  --text-faint: rgba(0,230,150,0.4);
+}
+
+/* ─── Shared Layout Helpers ─── */
+.page-shell {
+  min-height: 100vh;
+  background: #020609;
+  overflow-x: hidden;
+  position: relative;
+}
+
+.content-wrap {
+  position: relative;
+  z-index: 1;
+  max-width: var(--content-max);
+  margin-inline: auto;
+  padding-inline: var(--page-px);
+}
+
+.content-wide {
+  max-width: var(--content-wide);
+}
+
+/* ─── Navigation ─── */
+.nav-root {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  padding-inline: var(--page-px);
+  background: rgba(2,6,9,0.88);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+
+/* ─── Hero grid — 2 col desktop, 1 col mobile ─── */
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: center;
+  max-width: var(--content-wide);
+  margin-inline: auto;
+}
+
+@media (max-width: 768px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+  }
+  .hero-terminal {
+    display: none; /* hide terminal on small screens to avoid overflow */
+  }
+}
+
+/* ─── Stats row ─── */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(0.75rem, 2vw, 1.5rem);
+  padding: clamp(1rem, 2vw, 1.5rem);
+  background: rgba(0,230,150,0.03);
+  border: 1px solid rgba(0,230,150,0.1);
+  border-radius: 12px;
+}
+
+/* ─── Feature grid ─── */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
+  gap: 1.25rem;
+}
+
+/* ─── Steps grid ─── */
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
+  gap: 1.25rem;
+}
+
+/* ─── CTA button row ─── */
+.cta-row {
+  display: flex;
+  gap: 0.875rem;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 2.5rem;
+}
+
+@media (max-width: 480px) {
+  .cta-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .cta-row a,
+  .cta-row > * {
+    text-align: center;
+    justify-content: center;
+  }
+}
+
+/* ─── Leaderboard: Filters row ─── */
+.lb-filters {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.lb-filter-chips {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.lb-search {
+  margin-left: auto;
+  position: relative;
+}
+
+@media (max-width: 540px) {
+  .lb-search { margin-left: 0; width: 100%; }
+  .lb-search input { width: 100% !important; }
+}
+
+/* ─── Leaderboard: Table ─── */
+.lb-table-head,
+.lb-table-row {
+  display: grid;
+  grid-template-columns: 48px 1fr 72px 72px 72px 60px;
+  padding: 0.75rem 1.25rem;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+@media (max-width: 680px) {
+  .lb-table-head,
+  .lb-table-row {
+    grid-template-columns: 40px 1fr 68px;
+  }
+  .lb-table-head .col-assignments,
+  .lb-table-head .col-quizzes,
+  .lb-table-head .col-trend,
+  .lb-table-row .col-assignments,
+  .lb-table-row .col-quizzes,
+  .lb-table-row .col-trend {
+    display: none;
+  }
+}
+
+@media (max-width: 400px) {
+  .lb-table-head,
+  .lb-table-row {
+    grid-template-columns: 36px 1fr 60px;
+    padding: 0.65rem 0.75rem;
+  }
+}
+
+/* ─── Podium ─── */
+.podium-wrap {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.75rem;
+  height: clamp(160px, 30vw, 240px);
+  max-width: 680px;
+  margin-inline: auto;
+}
+
+@media (max-width: 400px) {
+  .podium-wrap { gap: 0.4rem; }
+}
+
+/* ─── Privacy page ─── */
+.pp-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+@media (max-width: 840px) {
+  .pp-layout {
+    grid-template-columns: 1fr;
+  }
+  .pp-toc { display: none; }
+}
+
+.pp-hero {
+  padding: clamp(5rem, 12vw, 9rem) var(--page-px) clamp(2.5rem, 5vw, 4rem);
+  text-align: center;
+}
+
+.pp-trust-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-top: 1.75rem;
+}
+
+.pp-content {
+  max-width: 860px;
+  margin-inline: auto;
+  padding: 2rem var(--page-px) 4rem;
+}
+
+/* ─── Footer ─── */
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(160px, 100%), 1fr));
+  gap: 2rem;
+  padding-block: 3rem 2rem;
+  padding-inline: var(--page-px);
+  max-width: var(--content-wide);
+  margin-inline: auto;
+}
+
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 1.25rem var(--page-px);
+  border-top: 1px solid rgba(0,230,150,0.08);
+  max-width: var(--content-wide);
+  margin-inline: auto;
+  font-size: 0.78rem;
+  color: rgba(0,230,150,0.35);
+}
+
+/* ─── Keyframes shared ─── */
+@keyframes neonPulse {
+  0%,100%{opacity:1;box-shadow:0 0 8px #00e696}
+  50%{opacity:.4;box-shadow:0 0 4px #00e696}
+}
+@keyframes shimmerH {
+  0%{background-position:0% 50%}
+  100%{background-position:200% 50%}
+}
+@keyframes pulse2s {
+  0%,100%{opacity:1;transform:scale(1)}
+  50%{opacity:.45;transform:scale(1.35)}
+}
+
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #020609; }
+::-webkit-scrollbar-thumb { background: rgba(0,230,150,0.2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(0,230,150,0.4); }
