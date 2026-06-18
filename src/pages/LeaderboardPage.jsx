@@ -1,252 +1,473 @@
-import { useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Link } from "react-router-dom";
+import { Navigation } from "../components/Navigation";
 
-const MOCK_STUDENTS = [
-  { id: 1, name: "Ahmad Raza", regNo: "F2021-BS-001", gpa: 3.85, courses: { "CS-401": 88, "CS-403": 92, "MATH-301": 79 }, trend: "up", avatar: "AR" },
-  { id: 2, name: "You (Muhammad Saad)", regNo: "F2021-BS-042", gpa: 3.72, courses: { "CS-401": 84, "CS-403": 88, "MATH-301": 76 }, trend: "up", avatar: "MS", isMe: true },
-  { id: 3, name: "Zara Khan", regNo: "F2021-BS-018", gpa: 3.69, courses: { "CS-401": 81, "CS-403": 85, "MATH-301": 82 }, trend: "same", avatar: "ZK" },
-  { id: 4, name: "Bilal Hussain", regNo: "F2021-BS-007", gpa: 3.55, courses: { "CS-401": 78, "CS-403": 80, "MATH-301": 74 }, trend: "down", avatar: "BH" },
-  { id: 5, name: "Sara Ahmed", regNo: "F2021-BS-023", gpa: 3.48, courses: { "CS-401": 75, "CS-403": 77, "MATH-301": 71 }, trend: "up", avatar: "SA" },
-  { id: 6, name: "Umar Farooq", regNo: "F2021-BS-031", gpa: 3.41, courses: { "CS-401": 72, "CS-403": 74, "MATH-301": 68 }, trend: "same", avatar: "UF" },
-  { id: 7, name: "Nida Malik", regNo: "F2021-BS-015", gpa: 3.35, courses: { "CS-401": 70, "CS-403": 71, "MATH-301": 66 }, trend: "down", avatar: "NM" },
-  { id: 8, name: "Hamza Ali", regNo: "F2021-BS-009", gpa: 3.22, courses: { "CS-401": 67, "CS-403": 68, "MATH-301": 63 }, trend: "up", avatar: "HA" },
-  { id: 9, name: "Ayesha Siddiq", regNo: "F2021-BS-040", gpa: 3.10, courses: { "CS-401": 63, "CS-403": 65, "MATH-301": 60 }, trend: "same", avatar: "AS" },
-  { id: 10, name: "Faisal Iqbal", regNo: "F2021-BS-052", gpa: 2.98, courses: { "CS-401": 60, "CS-403": 61, "MATH-301": 57 }, trend: "down", avatar: "FI" },
-];
-
-const COURSES = ["All Courses", "CS-401", "CS-403", "MATH-301"];
-
-function getRankSuffix(n) {
-  if (n === 1) return "st";
-  if (n === 2) return "nd";
-  if (n === 3) return "rd";
-  return "th";
+/* ───────────── Matrix Rain ───────────── */
+function MatrixRain({ opacity = 0.13 }) {
+  const canvasRef = useRef(null);
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    let animId;
+    const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+    resize();
+    window.addEventListener("resize", resize);
+    const chars = "アイウエオカキクケコサシスセソ0123456789ABCDEF</>{}[]";
+    const fs = 13;
+    let drops = [];
+    const init = () => { drops = Array.from({ length: Math.floor(canvas.width / fs) }, () => Math.random() * -80); };
+    init();
+    const draw = () => {
+      ctx.fillStyle = "rgba(0,0,0,0.04)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.font = `${fs}px monospace`;
+      drops.forEach((y, i) => {
+        const ch = chars[Math.floor(Math.random() * chars.length)];
+        const b = Math.random();
+        ctx.fillStyle = b > 0.95 ? "#ffffff" : b > 0.8 ? "#00ffaa" : "rgba(0,180,110,0.55)";
+        ctx.fillText(ch, i * fs, y * fs);
+        if (y * fs > canvas.height && Math.random() > 0.975) drops[i] = 0;
+        drops[i] += 0.45;
+      });
+      animId = requestAnimationFrame(draw);
+    };
+    draw();
+    return () => { cancelAnimationFrame(animId); window.removeEventListener("resize", resize); };
+  }, []);
+  return <canvas ref={canvasRef} style={{ position: "fixed", inset: 0, width: "100%", height: "100%", zIndex: 0, opacity, pointerEvents: "none" }} />;
 }
 
-function getTrendIcon(trend) {
-  if (trend === "up") return (
-    <span style={{ color: "#22c55e", display: "inline-flex", alignItems: "center" }}>
-      <svg width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M18 15l-6-6-6 6"/></svg>
-    </span>
+/* ───────────── Rank badge ───────────── */
+function RankBadge({ rank }) {
+  if (rank === 1) return <span style={{ fontSize: "1.2rem" }}>🥇</span>;
+  if (rank === 2) return <span style={{ fontSize: "1.2rem" }}>🥈</span>;
+  if (rank === 3) return <span style={{ fontSize: "1.2rem" }}>🥉</span>;
+  return (
+    <span style={{
+      display: "inline-flex", alignItems: "center", justifyContent: "center",
+      width: "26px", height: "26px",
+      background: "rgba(0,200,130,0.07)",
+      border: "1px solid rgba(0,200,130,0.15)",
+      borderRadius: "6px",
+      fontSize: "0.72rem", fontWeight: 700, color: "#64748b",
+    }}>{rank}</span>
   );
-  if (trend === "down") return (
-    <span style={{ color: "#ef4444", display: "inline-flex", alignItems: "center" }}>
-      <svg width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
-    </span>
+}
+
+/* ───────────── Trend arrow ───────────── */
+function Trend({ val }) {
+  if (val > 0) return <span style={{ color: "#00c882", fontSize: "0.75rem", fontWeight: 700 }}>▲ {val}</span>;
+  if (val < 0) return <span style={{ color: "#f87171", fontSize: "0.75rem", fontWeight: 700 }}>▼ {Math.abs(val)}</span>;
+  return <span style={{ color: "#475569", fontSize: "0.75rem" }}>─</span>;
+}
+
+/* ───────────── Podium card ───────────── */
+function PodiumCard({ rank, name, gpa, course, height, delay, isYou }) {
+  const colors = [
+    { bg: "rgba(255,200,0,0.08)", border: "rgba(255,200,0,0.3)", glow: "rgba(255,200,0,0.2)", accent: "#ffd700" },
+    { bg: "rgba(180,190,200,0.06)", border: "rgba(180,190,200,0.25)", glow: "rgba(180,190,200,0.15)", accent: "#94a3b8" },
+    { bg: "rgba(180,100,30,0.07)", border: "rgba(180,100,30,0.3)", glow: "rgba(180,100,30,0.15)", accent: "#cd7f32" },
+  ];
+  const c = colors[rank - 1];
+  const medals = ["🥇", "🥈", "🥉"];
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 40 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay, type: "spring", stiffness: 180, damping: 22 }}
+      style={{
+        display: "flex", flexDirection: "column", alignItems: "center",
+        justifyContent: "flex-end",
+        flex: 1, minWidth: 0,
+      }}
+    >
+      {/* avatar + name */}
+      <div style={{ textAlign: "center", marginBottom: "0.75rem" }}>
+        <motion.div
+          animate={rank === 1 ? { boxShadow: ["0 0 16px rgba(255,200,0,0.3)", "0 0 32px rgba(255,200,0,0.5)", "0 0 16px rgba(255,200,0,0.3)"] } : {}}
+          transition={{ duration: 2.5, repeat: Infinity }}
+          style={{
+            width: rank === 1 ? "62px" : "50px",
+            height: rank === 1 ? "62px" : "50px",
+            borderRadius: "50%",
+            background: `linear-gradient(135deg, ${c.accent}33, ${c.accent}11)`,
+            border: `2px solid ${c.accent}`,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            fontSize: rank === 1 ? "1.6rem" : "1.3rem",
+            margin: "0 auto 8px",
+          }}
+        >🎓</motion.div>
+        <div style={{ fontSize: "0.8rem", fontWeight: 700, color: "#e2e8f0", marginBottom: "2px" }}>{name}</div>
+        {isYou && <span style={{ fontSize: "0.62rem", background: "rgba(0,200,130,0.15)", border: "1px solid rgba(0,200,130,0.3)", color: "#00c882", padding: "1px 7px", borderRadius: "100px", fontWeight: 700 }}>YOU</span>}
+        <div style={{ fontSize: "0.72rem", color: "#64748b", marginTop: "2px" }}>{course}</div>
+      </div>
+      {/* bar */}
+      <div style={{
+        width: "100%",
+        height: `${height}px`,
+        background: c.bg,
+        border: `1px solid ${c.border}`,
+        borderRadius: "12px 12px 0 0",
+        boxShadow: `0 0 24px ${c.glow}`,
+        display: "flex", flexDirection: "column",
+        alignItems: "center", justifyContent: "flex-start",
+        padding: "1rem 0.5rem 0",
+        position: "relative", overflow: "hidden",
+      }}>
+        <div style={{ fontSize: "1.5rem" }}>{medals[rank - 1]}</div>
+        <div style={{ fontSize: "1rem", fontWeight: 800, color: c.accent, marginTop: "4px" }}>{gpa}</div>
+        <div style={{ fontSize: "0.68rem", color: "#64748b" }}>GPA</div>
+        {/* shimmer */}
+        <div style={{
+          position: "absolute", top: 0, left: 0, right: 0, height: "1px",
+          background: `linear-gradient(90deg, transparent, ${c.accent}, transparent)`,
+          opacity: 0.6,
+        }} />
+      </div>
+    </motion.div>
   );
-  return <span style={{ color: "#94a3b8" }}>—</span>;
 }
 
-function getMedalColor(rank) {
-  if (rank === 1) return { bg: "rgba(234,179,8,0.15)", border: "rgba(234,179,8,0.5)", text: "#fbbf24" };
-  if (rank === 2) return { bg: "rgba(148,163,184,0.15)", border: "rgba(148,163,184,0.5)", text: "#94a3b8" };
-  if (rank === 3) return { bg: "rgba(217,119,6,0.15)", border: "rgba(217,119,6,0.5)", text: "#f59e0b" };
-  return { bg: "transparent", border: "transparent", text: "#64748b" };
-}
-
+/* ───────────── Main Page ───────────── */
 export function LeaderboardPage() {
-  const [selectedCourse, setSelectedCourse] = useState("All Courses");
-  const [animateIn, setAnimateIn] = useState(false);
+  const [filter, setFilter] = useState("all");
+  const [search, setSearch] = useState("");
   const [hoveredRow, setHoveredRow] = useState(null);
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    setTimeout(() => setAnimateIn(true), 100);
-  }, []);
+  useEffect(() => { window.scrollTo(0, 0); }, []);
 
-  const getSortedStudents = () => {
-    if (selectedCourse === "All Courses") {
-      return [...MOCK_STUDENTS].sort((a, b) => b.gpa - a.gpa);
-    }
-    return [...MOCK_STUDENTS]
-      .filter((s) => s.courses[selectedCourse] !== undefined)
-      .sort((a, b) => (b.courses[selectedCourse] || 0) - (a.courses[selectedCourse] || 0));
-  };
+  const YOU = "Muhammad Saad";
 
-  const students = getSortedStudents();
-  const myRank = students.findIndex((s) => s.isMe) + 1;
-  const myScore = selectedCourse === "All Courses"
-    ? students.find((s) => s.isMe)?.gpa.toFixed(2)
-    : students.find((s) => s.isMe)?.courses[selectedCourse];
+  const allStudents = [
+    { rank: 1,  name: "Ayesha Raza",      gpa: 3.92, trend: 0,  course: "CS-401", assignments: 98, quizzes: 95, isYou: false },
+    { rank: 2,  name: YOU,                 gpa: 3.87, trend: 2,  course: "CS-401", assignments: 95, quizzes: 93, isYou: true  },
+    { rank: 3,  name: "Bilal Ahmed",       gpa: 3.81, trend: -1, course: "CS-401", assignments: 92, quizzes: 90, isYou: false },
+    { rank: 4,  name: "Sana Malik",        gpa: 3.74, trend: 1,  course: "CS-403", assignments: 90, quizzes: 88, isYou: false },
+    { rank: 5,  name: "Usman Tariq",       gpa: 3.68, trend: 0,  course: "CS-401", assignments: 87, quizzes: 85, isYou: false },
+    { rank: 6,  name: "Fatima Noor",       gpa: 3.61, trend: 3,  course: "MATH-301",assignments: 85, quizzes: 82, isYou: false },
+    { rank: 7,  name: "Hassan Iqbal",      gpa: 3.55, trend: -2, course: "CS-403", assignments: 83, quizzes: 80, isYou: false },
+    { rank: 8,  name: "Mariam Zahid",      gpa: 3.48, trend: 0,  course: "CS-401", assignments: 81, quizzes: 78, isYou: false },
+    { rank: 9,  name: "Zaid Hussain",      gpa: 3.40, trend: 1,  course: "MATH-301",assignments: 79, quizzes: 76, isYou: false },
+    { rank: 10, name: "Nadia Shahid",      gpa: 3.33, trend: -1, course: "CS-403", assignments: 77, quizzes: 74, isYou: false },
+    { rank: 11, name: "Imran Butt",        gpa: 3.25, trend: 0,  course: "CS-401", assignments: 75, quizzes: 72, isYou: false },
+    { rank: 12, name: "Hira Khan",         gpa: 3.18, trend: 2,  course: "MATH-301",assignments: 73, quizzes: 70, isYou: false },
+  ];
 
-  const top3 = students.slice(0, 3);
+  const courses = ["all", "CS-401", "CS-403", "MATH-301"];
+
+  const filtered = allStudents.filter(s => {
+    const courseMatch = filter === "all" || s.course === filter;
+    const searchMatch = s.name.toLowerCase().includes(search.toLowerCase());
+    return courseMatch && searchMatch;
+  });
+
+  const top3 = allStudents.filter(s => s.rank <= 3 && (filter === "all" || s.course === filter));
+  const youEntry = allStudents.find(s => s.isYou);
+
+  const podiumOrder = top3.length === 3 ? [top3[1], top3[0], top3[2]] : top3;
 
   return (
-    <div className="lb-page">
-      <div className="lb-header">
-        <div className="lb-header-inner">
-          <div className="lb-header-left">
-            <div className="lb-badge">
-              <svg width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                <path d="M8 21h8M12 17v4M17 7A5 5 0 0 1 7 7v5a5 5 0 0 0 10 0V7z"/>
-                <path d="M5 7H3v4a2 2 0 0 0 2 2h0M19 7h2v4a2 2 0 0 1-2 2h0"/>
-              </svg>
-              Class Leaderboard
-            </div>
-            <h1 className="lb-title">How You Rank</h1>
-            <p className="lb-subtitle">Live rankings among your classmates based on Horizon UCP grades</p>
+    <div style={{
+      minHeight: "100vh",
+      background: "#050a10",
+      color: "#e2e8f0",
+      fontFamily: "'Inter', 'Segoe UI', system-ui, sans-serif",
+      position: "relative",
+    }}>
+      <MatrixRain opacity={0.12} />
+      <Navigation />
+
+      {/* ── Hero ── */}
+      <div style={{
+        position: "relative", zIndex: 1,
+        paddingTop: "90px",
+        paddingBottom: "2.5rem",
+        textAlign: "center",
+        borderBottom: "1px solid rgba(0,200,130,0.1)",
+        background: "linear-gradient(180deg, rgba(0,200,130,0.04) 0%, transparent 100%)",
+      }}>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          <div style={{
+            display: "inline-flex", alignItems: "center", gap: "7px",
+            background: "rgba(0,200,130,0.07)",
+            border: "1px solid rgba(0,200,130,0.2)",
+            color: "#00c882", fontSize: "0.7rem", fontWeight: 700,
+            letterSpacing: "0.1em", textTransform: "uppercase",
+            padding: "5px 14px", borderRadius: "100px",
+            marginBottom: "1rem",
+          }}>
+            <span style={{ width: "5px", height: "5px", background: "#00c882", borderRadius: "50%", boxShadow: "0 0 8px #00c882", animation: "ppPulse 2s infinite", display: "inline-block" }} />
+            Live • Updated just now
           </div>
-          <div className="lb-my-stat">
-            <div className="lb-my-rank">
-              <span className="lb-my-rank-num">{myRank}<sup>{getRankSuffix(myRank)}</sup></span>
-              <span className="lb-my-rank-label">Your Rank</span>
-            </div>
-            <div className="lb-my-score-wrap">
-              <span className="lb-my-score">{myScore}</span>
-              <span className="lb-my-score-label">{selectedCourse === "All Courses" ? "GPA" : "Marks"}</span>
-            </div>
-          </div>
-        </div>
+          <h1 style={{
+            fontSize: "clamp(1.8rem, 4vw, 3rem)",
+            fontWeight: 900, letterSpacing: "-0.02em",
+            marginBottom: "0.5rem", lineHeight: 1.1,
+          }}>
+            <span style={{ color: "#e2e8f0" }}>Class </span>
+            <span style={{ background: "linear-gradient(135deg, #00c882, #00ffaa)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>Leaderboard</span>
+          </h1>
+          <p style={{ fontSize: "0.92rem", color: "#64748b", maxWidth: "44ch", margin: "0 auto 1.5rem" }}>
+            Real-time rankings from Horizon UCP grade data — updated whenever classmates sync.
+          </p>
+
+          {/* Your rank pill */}
+          {youEntry && (
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.4, type: "spring" }}
+              style={{
+                display: "inline-flex", alignItems: "center", gap: "12px",
+                background: "rgba(0,200,130,0.06)",
+                border: "1px solid rgba(0,200,130,0.25)",
+                borderRadius: "14px",
+                padding: "10px 20px",
+              }}
+            >
+              <span style={{ fontSize: "0.8rem", color: "#64748b" }}>Your Rank</span>
+              <span style={{ fontSize: "1.3rem", fontWeight: 900, color: "#00c882" }}>#{youEntry.rank}</span>
+              <div style={{ width: "1px", height: "24px", background: "rgba(0,200,130,0.2)" }} />
+              <span style={{ fontSize: "0.8rem", color: "#64748b" }}>GPA</span>
+              <span style={{ fontSize: "1.1rem", fontWeight: 800, color: "#c8f0e8" }}>{youEntry.gpa}</span>
+            </motion.div>
+          )}
+        </motion.div>
       </div>
 
-      <div className="lb-filter-bar">
-        <div className="lb-filter-inner">
-          {COURSES.map((c) => (
-            <button key={c} onClick={() => setSelectedCourse(c)} className={`lb-filter-btn ${selectedCourse === c ? "active" : ""}`}>
-              {c}
-            </button>
+      {/* ── Podium ── */}
+      {top3.length === 3 && (
+        <div style={{
+          position: "relative", zIndex: 1,
+          maxWidth: "700px", margin: "0 auto",
+          padding: "2.5rem 1.5rem 0",
+        }}>
+          <div style={{
+            display: "flex",
+            alignItems: "flex-end",
+            gap: "1rem",
+            height: "240px",
+          }}>
+            {podiumOrder.map((s, i) => (
+              <PodiumCard
+                key={s.name}
+                rank={s.rank}
+                name={s.name}
+                gpa={s.gpa}
+                course={s.course}
+                isYou={s.isYou}
+                height={s.rank === 1 ? 175 : s.rank === 2 ? 140 : 115}
+                delay={[0.3, 0.1, 0.5][i]}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ── Filters + Search ── */}
+      <div style={{
+        position: "relative", zIndex: 1,
+        maxWidth: "960px", margin: "2rem auto 0",
+        padding: "0 1.5rem",
+        display: "flex", gap: "0.75rem", flexWrap: "wrap", alignItems: "center",
+      }}>
+        {/* Course filters */}
+        <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap" }}>
+          {courses.map(c => (
+            <button
+              key={c}
+              onClick={() => setFilter(c)}
+              style={{
+                padding: "6px 14px",
+                borderRadius: "8px",
+                fontSize: "0.78rem", fontWeight: filter === c ? 700 : 500,
+                border: filter === c ? "1px solid rgba(0,200,130,0.35)" : "1px solid rgba(255,255,255,0.08)",
+                background: filter === c ? "rgba(0,200,130,0.1)" : "rgba(255,255,255,0.03)",
+                color: filter === c ? "#00c882" : "#64748b",
+                cursor: "pointer",
+                transition: "all 150ms ease",
+              }}
+            >{c === "all" ? "All Courses" : c}</button>
           ))}
-          <div className="lb-filter-right"><span className="lb-count">{students.length} students</span></div>
+        </div>
+        {/* Search */}
+        <div style={{ marginLeft: "auto", position: "relative" }}>
+          <svg width="14" height="14" fill="none" stroke="#475569" strokeWidth="2" viewBox="0 0 24 24"
+            style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }}>
+            <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+          </svg>
+          <input
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            placeholder="Search classmate…"
+            style={{
+              background: "rgba(255,255,255,0.04)",
+              border: "1px solid rgba(255,255,255,0.1)",
+              borderRadius: "8px",
+              padding: "7px 12px 7px 32px",
+              fontSize: "0.8rem", color: "#e2e8f0",
+              outline: "none",
+              width: "180px",
+            }}
+          />
         </div>
       </div>
 
-      <div className="lb-content">
-        <div className={`lb-podium ${animateIn ? "lb-podium-in" : ""}`}>
-          {[top3[1], top3[0], top3[2]].map((student, pIdx) => {
-            if (!student) return null;
-            const actualRank = students.indexOf(student) + 1;
-            const podiumHeights = [180, 220, 160];
-            const medal = getMedalColor(actualRank);
-            return (
-              <div key={student.id} className={`lb-podium-item`} style={{ "--podium-h": `${podiumHeights[pIdx]}px`, "--medal-bg": medal.bg, "--medal-border": medal.border, "--medal-text": medal.text }}>
-                <div className={`lb-podium-avatar ${student.isMe ? "lb-podium-avatar-me" : ""}`}>
-                  {student.avatar}
-                  <div className="lb-podium-rank-badge" style={{ background: medal.text, color: "#0f1117" }}>{actualRank}</div>
-                </div>
-                <div className="lb-podium-name">{student.isMe ? "You" : student.name.split(" ")[0]}</div>
-                <div className="lb-podium-score">{selectedCourse === "All Courses" ? student.gpa.toFixed(2) : student.courses[selectedCourse]}<span className="lb-podium-score-unit">{selectedCourse === "All Courses" ? " GPA" : " pts"}</span></div>
-                <div className="lb-podium-bar" style={{ height: "var(--podium-h)" }}>
-                  <div className="lb-podium-bar-fill" style={{ background: medal.text + "33", borderColor: medal.border }}></div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        <div className="lb-table-wrap">
-          <div className="lb-table-header-row">
-            <span className="lb-th rank">Rank</span>
-            <span className="lb-th student">Student</span>
-            <span className="lb-th score">{selectedCourse === "All Courses" ? "GPA" : "Score"}</span>
-            <span className="lb-th trend">Trend</span>
-            <span className="lb-th progress">Progress</span>
+      {/* ── Table ── */}
+      <div style={{
+        position: "relative", zIndex: 1,
+        maxWidth: "960px", margin: "1.25rem auto 4rem",
+        padding: "0 1.5rem",
+      }}>
+        <div style={{
+          background: "rgba(10,15,26,0.85)",
+          border: "1px solid rgba(0,200,130,0.12)",
+          borderRadius: "16px",
+          overflow: "hidden",
+          backdropFilter: "blur(8px)",
+        }}>
+          {/* Table head */}
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "52px 1fr 90px 90px 90px 70px",
+            padding: "0.7rem 1.25rem",
+            borderBottom: "1px solid rgba(0,200,130,0.1)",
+            fontSize: "0.66rem", fontWeight: 700,
+            letterSpacing: "0.1em", textTransform: "uppercase",
+            color: "#4a9e8a",
+          }}>
+            <span>#</span>
+            <span>Student</span>
+            <span style={{ textAlign: "right" }}>GPA</span>
+            <span style={{ textAlign: "right" }}>Assignments</span>
+            <span style={{ textAlign: "right" }}>Quizzes</span>
+            <span style={{ textAlign: "right" }}>Trend</span>
           </div>
-          {students.map((student, index) => {
-            const rank = index + 1;
-            const medal = getMedalColor(rank);
-            const score = selectedCourse === "All Courses" ? student.gpa : student.courses[selectedCourse];
-            const maxScore = selectedCourse === "All Courses" ? 4.0 : 100;
-            const pct = Math.round((score / maxScore) * 100);
-            return (
-              <div key={student.id}
-                className={`lb-row ${student.isMe ? "lb-row-me" : ""} ${hoveredRow === student.id ? "lb-row-hover" : ""}`}
-                onMouseEnter={() => setHoveredRow(student.id)}
-                onMouseLeave={() => setHoveredRow(null)}
-                style={{ "--row-delay": `${index * 60}ms`, "--medal-border": medal.border }}
-              >
-                <div className="lb-cell rank">
-                  <div className="lb-rank-badge" style={{ background: medal.bg, borderColor: medal.border, color: medal.text }}>
-                    {rank <= 3 ? ["🥇","🥈","🥉"][rank-1] : rank}
-                  </div>
-                </div>
-                <div className="lb-cell student">
-                  <div className="lb-avatar" style={{ background: student.isMe ? "rgba(1,105,111,0.2)" : "rgba(255,255,255,0.05)", borderColor: student.isMe ? "#01696f" : "transparent" }}>{student.avatar}</div>
-                  <div className="lb-student-info">
-                    <span className="lb-student-name">{student.isMe ? <strong>{student.name}</strong> : student.name}{student.isMe && <span className="lb-you-badge">You</span>}</span>
-                    <span className="lb-student-reg">{student.regNo}</span>
-                  </div>
-                </div>
-                <div className="lb-cell score">
-                  <span className="lb-score-val" style={{ color: rank <= 3 ? medal.text : "#e2e8f0" }}>{selectedCourse === "All Courses" ? score.toFixed(2) : score}</span>
-                  <span className="lb-score-unit">{selectedCourse === "All Courses" ? "/ 4.0" : "/ 100"}</span>
-                </div>
-                <div className="lb-cell trend">{getTrendIcon(student.trend)}</div>
-                <div className="lb-cell progress">
-                  <div className="lb-progress-track">
-                    <div className="lb-progress-fill" style={{ width: `${pct}%`, background: rank === 1 ? "#fbbf24" : rank === 2 ? "#94a3b8" : rank === 3 ? "#f59e0b" : student.isMe ? "#01696f" : "#334155" }}></div>
-                  </div>
-                  <span className="lb-pct">{pct}%</span>
-                </div>
+
+          {/* Table rows */}
+          <AnimatePresence mode="popLayout">
+            {filtered.length === 0 ? (
+              <div style={{ padding: "3rem", textAlign: "center", color: "#475569", fontSize: "0.88rem" }}>
+                No students match your filter.
               </div>
-            );
-          })}
+            ) : (
+              filtered.map((s, i) => (
+                <motion.div
+                  key={s.name}
+                  initial={{ opacity: 0, x: -12 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 12 }}
+                  transition={{ delay: i * 0.03, duration: 0.3 }}
+                  onMouseEnter={() => setHoveredRow(s.rank)}
+                  onMouseLeave={() => setHoveredRow(null)}
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "52px 1fr 90px 90px 90px 70px",
+                    padding: "0.85rem 1.25rem",
+                    borderBottom: i < filtered.length - 1 ? "1px solid rgba(255,255,255,0.04)" : "none",
+                    alignItems: "center",
+                    background: s.isYou
+                      ? "rgba(0,200,130,0.05)"
+                      : hoveredRow === s.rank
+                        ? "rgba(255,255,255,0.025)"
+                        : "transparent",
+                    borderLeft: s.isYou ? "2px solid rgba(0,200,130,0.5)" : "2px solid transparent",
+                    transition: "background 150ms ease",
+                    cursor: "default",
+                  }}
+                >
+                  <div><RankBadge rank={s.rank} /></div>
+
+                  <div style={{ display: "flex", alignItems: "center", gap: "10px", minWidth: 0 }}>
+                    <div style={{
+                      width: "32px", height: "32px",
+                      borderRadius: "50%",
+                      background: s.isYou
+                        ? "rgba(0,200,130,0.15)"
+                        : "rgba(255,255,255,0.05)",
+                      border: s.isYou ? "1px solid rgba(0,200,130,0.4)" : "1px solid rgba(255,255,255,0.08)",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      fontSize: "0.9rem", flexShrink: 0,
+                    }}>🎓</div>
+                    <div style={{ minWidth: 0 }}>
+                      <div style={{
+                        fontSize: "0.85rem", fontWeight: s.isYou ? 700 : 500,
+                        color: s.isYou ? "#c8f0e8" : "#e2e8f0",
+                        whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+                      }}>
+                        {s.name}
+                        {s.isYou && (
+                          <span style={{
+                            marginLeft: "7px",
+                            fontSize: "0.6rem", fontWeight: 700,
+                            background: "rgba(0,200,130,0.15)",
+                            border: "1px solid rgba(0,200,130,0.3)",
+                            color: "#00c882",
+                            padding: "1px 6px", borderRadius: "100px",
+                          }}>YOU</span>
+                        )}
+                      </div>
+                      <div style={{ fontSize: "0.72rem", color: "#475569" }}>{s.course}</div>
+                    </div>
+                  </div>
+
+                  {/* GPA with bar */}
+                  <div style={{ textAlign: "right" }}>
+                    <div style={{ fontSize: "0.88rem", fontWeight: 700, color: s.isYou ? "#00c882" : "#e2e8f0" }}>{s.gpa}</div>
+                    <div style={{ height: "3px", background: "rgba(255,255,255,0.06)", borderRadius: "2px", marginTop: "3px" }}>
+                      <div style={{ width: `${(s.gpa / 4) * 100}%`, height: "100%", background: s.isYou ? "#00c882" : "rgba(255,255,255,0.2)", borderRadius: "2px" }} />
+                    </div>
+                  </div>
+
+                  <div style={{ textAlign: "right", fontSize: "0.85rem", color: "#94a3b8" }}>{s.assignments}%</div>
+                  <div style={{ textAlign: "right", fontSize: "0.85rem", color: "#94a3b8" }}>{s.quizzes}%</div>
+                  <div style={{ textAlign: "right" }}><Trend val={s.trend} /></div>
+                </motion.div>
+              ))
+            )}
+          </AnimatePresence>
         </div>
 
-        <div className="lb-data-note">
-          <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
-          Data synced securely from your Horizon UCP portal. Rankings refresh when any classmate visits their course page. All data encrypted in transit.
-        </div>
+        {/* Security note */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6 }}
+          style={{
+            marginTop: "1rem",
+            display: "flex", alignItems: "center", gap: "8px",
+            background: "rgba(0,200,130,0.04)",
+            border: "1px solid rgba(0,200,130,0.1)",
+            borderRadius: "10px",
+            padding: "10px 16px",
+            fontSize: "0.78rem", color: "#4a9e8a",
+          }}
+        >
+          <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+          All grade data is encrypted in transit from the Horizon UCP portal. Names are opt-in only.
+          <Link to="/privacy" style={{ marginLeft: "auto", color: "#00c882", textDecoration: "none", fontWeight: 600, whiteSpace: "nowrap" }}>Privacy Policy →</Link>
+        </motion.div>
       </div>
 
       <style>{`
-        .lb-page { min-height: 100vh; background: #0f1117; color: #e2e8f0; font-family: 'Inter', system-ui, sans-serif; }
-        .lb-header { background: linear-gradient(135deg, #0f1117, #1a1f2e); border-bottom: 1px solid #1e2a3a; padding: 2.5rem 2rem 2rem; }
-        .lb-header-inner { max-width: 960px; margin: 0 auto; display: flex; justify-content: space-between; align-items: flex-end; gap: 2rem; flex-wrap: wrap; }
-        .lb-badge { display: inline-flex; align-items: center; gap: 7px; background: rgba(1,105,111,0.15); border: 1px solid rgba(1,105,111,0.4); color: #4f98a3; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; padding: 5px 12px; border-radius: 100px; margin-bottom: 0.75rem; }
-        .lb-title { font-size: clamp(1.8rem, 4vw, 2.5rem); font-weight: 800; color: #f0f4f8; margin-bottom: 0.4rem; }
-        .lb-subtitle { font-size: 0.88rem; color: #64748b; }
-        .lb-my-stat { display: flex; gap: 1.5rem; align-items: center; background: rgba(1,105,111,0.08); border: 1px solid rgba(1,105,111,0.25); border-radius: 14px; padding: 1rem 1.5rem; flex-shrink: 0; }
-        .lb-my-rank { display: flex; flex-direction: column; align-items: center; }
-        .lb-my-rank-num { font-size: 2rem; font-weight: 800; color: #4f98a3; line-height: 1; }
-        .lb-my-rank-num sup { font-size: 0.9rem; }
-        .lb-my-rank-label { font-size: 0.72rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.06em; margin-top: 3px; }
-        .lb-my-score-wrap { display: flex; flex-direction: column; align-items: center; border-left: 1px solid rgba(1,105,111,0.2); padding-left: 1.5rem; }
-        .lb-my-score { font-size: 2rem; font-weight: 800; color: #f0f4f8; line-height: 1; }
-        .lb-my-score-label { font-size: 0.72rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.06em; margin-top: 3px; }
-        .lb-filter-bar { border-bottom: 1px solid #1e2a3a; padding: 0.75rem 2rem; background: #12151d; }
-        .lb-filter-inner { max-width: 960px; margin: 0 auto; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
-        .lb-filter-btn { padding: 6px 16px; border-radius: 100px; border: 1px solid #1e2a3a; background: transparent; color: #64748b; font-size: 0.82rem; font-weight: 500; cursor: pointer; transition: all 160ms ease; }
-        .lb-filter-btn:hover { color: #94a3b8; border-color: #334155; }
-        .lb-filter-btn.active { background: rgba(1,105,111,0.15); border-color: rgba(1,105,111,0.5); color: #4f98a3; font-weight: 600; }
-        .lb-filter-right { margin-left: auto; }
-        .lb-count { font-size: 0.78rem; color: #334155; }
-        .lb-content { max-width: 960px; margin: 0 auto; padding: 2rem; }
-        .lb-podium { display: flex; justify-content: center; align-items: flex-end; gap: 1rem; margin-bottom: 2.5rem; opacity: 0; transform: translateY(20px); transition: opacity 500ms ease, transform 500ms ease; }
-        .lb-podium.lb-podium-in { opacity: 1; transform: translateY(0); }
-        .lb-podium-item { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; max-width: 160px; }
-        .lb-podium-avatar { width: 52px; height: 52px; border-radius: 50%; background: #1a1f2e; border: 2px solid #1e2a3a; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: 700; color: #94a3b8; position: relative; }
-        .lb-podium-avatar-me { border-color: #01696f; color: #4f98a3; background: rgba(1,105,111,0.15); }
-        .lb-podium-rank-badge { position: absolute; bottom: -6px; right: -6px; width: 20px; height: 20px; border-radius: 50%; font-size: 0.65rem; font-weight: 800; display: flex; align-items: center; justify-content: center; }
-        .lb-podium-name { font-size: 0.82rem; font-weight: 600; color: #e2e8f0; text-align: center; }
-        .lb-podium-score { font-size: 1rem; font-weight: 800; color: var(--medal-text); }
-        .lb-podium-score-unit { font-size: 0.65rem; font-weight: 400; color: #64748b; }
-        .lb-podium-bar { width: 100%; }
-        .lb-podium-bar-fill { width: 100%; height: 100%; border-radius: 6px 6px 0 0; border: 1px solid var(--medal-border); border-bottom: none; }
-        .lb-table-wrap { background: #1a1f2e; border: 1px solid #1e2a3a; border-radius: 14px; overflow: hidden; }
-        .lb-table-header-row { display: grid; grid-template-columns: 60px 1fr 100px 60px 160px; padding: 0.75rem 1.25rem; background: #12151d; border-bottom: 1px solid #1e2a3a; gap: 1rem; }
-        .lb-th { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #334155; }
-        .lb-row { display: grid; grid-template-columns: 60px 1fr 100px 60px 160px; padding: 0.875rem 1.25rem; gap: 1rem; border-bottom: 1px solid #1a1f2e; align-items: center; transition: background 120ms ease; cursor: default; }
-        .lb-row:last-child { border-bottom: none; }
-        .lb-row-me { background: rgba(1,105,111,0.05); border-left: 2px solid #01696f; }
-        .lb-row-hover { background: rgba(255,255,255,0.025); }
-        .lb-cell { display: flex; align-items: center; }
-        .lb-rank-badge { width: 32px; height: 32px; border-radius: 8px; border: 1px solid; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; }
-        .lb-avatar { width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; color: #94a3b8; margin-right: 10px; flex-shrink: 0; }
-        .lb-student-info { display: flex; flex-direction: column; gap: 2px; overflow: hidden; }
-        .lb-student-name { font-size: 0.88rem; font-weight: 500; color: #e2e8f0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 6px; }
-        .lb-student-reg { font-size: 0.73rem; color: #334155; }
-        .lb-you-badge { background: rgba(1,105,111,0.2); color: #4f98a3; font-size: 0.65rem; font-weight: 700; padding: 1px 7px; border-radius: 100px; border: 1px solid rgba(1,105,111,0.4); }
-        .lb-score-val { font-size: 1rem; font-weight: 700; font-variant-numeric: tabular-nums; }
-        .lb-score-unit { font-size: 0.72rem; color: #334155; margin-left: 3px; }
-        .lb-progress-track { flex: 1; height: 6px; background: #1e2a3a; border-radius: 100px; overflow: hidden; }
-        .lb-progress-fill { height: 100%; border-radius: 100px; transition: width 600ms cubic-bezier(0.16,1,0.3,1); }
-        .lb-pct { font-size: 0.72rem; color: #64748b; margin-left: 8px; width: 36px; text-align: right; font-variant-numeric: tabular-nums; }
-        .lb-data-note { display: flex; align-items: center; gap: 8px; margin-top: 1.25rem; font-size: 0.78rem; color: #334155; padding: 0.75rem 1rem; background: rgba(255,255,255,0.02); border: 1px solid #1e2a3a; border-radius: 8px; }
-        @media (max-width: 640px) {
-          .lb-table-header-row, .lb-row { grid-template-columns: 44px 1fr 80px; }
-          .lb-cell.trend, .lb-cell.progress, .lb-th.trend, .lb-th.progress { display: none; }
-          .lb-content { padding: 1.5rem 1rem; }
-          .lb-header { padding: 2rem 1rem 1.5rem; }
-          .lb-my-stat { display: none; }
+        @keyframes ppPulse {
+          0%,100%{opacity:1;transform:scale(1);box-shadow:0 0 8px #00c882}
+          50%{opacity:.4;transform:scale(1.4);box-shadow:0 0 4px #00c882}
+        }
+        input::placeholder { color: #475569; }
+        input:focus { border-color: rgba(0,200,130,0.3) !important; box-shadow: 0 0 0 2px rgba(0,200,130,0.08); }
+        @media(max-width:640px){
+          [style*="gridTemplateColumns"] { grid-template-columns: 40px 1fr 70px 60px !important; }
+          [style*="gridTemplateColumns"] > *:nth-child(5),
+          [style*="gridTemplateColumns"] > *:nth-child(6) { display: none; }
         }
       `}</style>
     </div>
