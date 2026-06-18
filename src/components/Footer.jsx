@@ -1,236 +1,200 @@
-import { Link } from "react-router-dom";
-import { GraduationCap, Github, Mail, MessageCircle, Heart, Code, Sparkles, ExternalLink } from "lucide-react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import { Github, Shield, Zap, BarChart3, Heart, Lock, Code, Mail } from "lucide-react";
+import { useEffect, useRef } from "react";
 
 export function Footer() {
-    const socialLinks = [
-        {
-            icon: Github,
-            href: "https://github.com/msaadakram",
-            label: "GitHub",
-            color: "from-gray-600 to-gray-800 dark:from-gray-400 dark:to-gray-600",
-            hoverColor: "hover:from-purple-600 hover:to-blue-600 dark:hover:from-purple-500 dark:hover:to-blue-500",
-        },
-        {
-            icon: Mail,
-            href: "mailto:msaadakram786@gmail.com",
-            label: "Email",
-            color: "from-blue-600 to-cyan-600 dark:from-blue-500 dark:to-cyan-500",
-            hoverColor: "hover:from-blue-700 hover:to-cyan-700 dark:hover:from-blue-600 dark:hover:to-cyan-600",
-        },
-        {
-            icon: MessageCircle,
-            href: "https://wa.me/923460047018",
-            label: "WhatsApp",
-            color: "from-green-600 to-emerald-600 dark:from-green-500 dark:to-emerald-500",
-            hoverColor: "hover:from-green-700 hover:to-emerald-700 dark:hover:from-green-600 dark:hover:to-emerald-600",
-        },
-    ];
+  const canvasRef = useRef(null);
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    const resize = () => { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; };
+    resize();
+    const chars = "01アイウエカサタナ</>{}[]";
+    const fontSize = 11;
+    let cols = Math.floor(canvas.width / fontSize);
+    let drops = Array.from({ length: cols }, () => Math.random() * -50);
+    let id;
+    const draw = () => {
+      ctx.fillStyle = "rgba(2,6,9,0.06)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      cols = Math.floor(canvas.width / fontSize);
+      if (drops.length !== cols) drops = Array.from({ length: cols }, () => Math.random() * -50);
+      ctx.font = `${fontSize}px monospace`;
+      drops.forEach((y, i) => {
+        const b = Math.random();
+        ctx.fillStyle = b > 0.97 ? "#ffffff" : b > 0.85 ? "rgba(0,230,150,0.9)" : "rgba(0,200,130,0.3)";
+        ctx.fillText(chars[Math.floor(Math.random() * chars.length)], i * fontSize, y * fontSize);
+        if (y * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+        drops[i] += 0.4;
+      });
+      id = requestAnimationFrame(draw);
+    };
+    draw();
+    return () => cancelAnimationFrame(id);
+  }, []);
 
-    const contactInfo = [
-        {
-            icon: Mail,
-            label: "Email",
-            value: "msaadakram786@gmail.com",
-            href: "mailto:msaadakram786@gmail.com",
-        },
-        {
-            icon: MessageCircle,
-            label: "WhatsApp",
-            value: "+92 346 0047018",
-            href: "https://wa.me/923460047018/",
-        },
-        {
-            icon: Github,
-            label: "GitHub",
-            value: "@msaadakram",
-            href: "https://github.com/msaadakram",
-        },
-    ];
+  const links = [
+    { group: "Product", items: [
+      { to: "/", label: "Home", icon: Zap },
+      { to: "/leaderboard", label: "Leaderboard", icon: BarChart3 },
+      { to: "/donate", label: "Support Us", icon: Heart },
+    ]},
+    { group: "Legal", items: [
+      { to: "/privacy", label: "Privacy Policy", icon: Lock },
+      { to: "/privacy", label: "Data Security", icon: Shield },
+    ]},
+    { group: "Developer", items: [
+      { href: "https://github.com/msaadakram", label: "GitHub", icon: Github },
+      { href: "mailto:ucplivegrading@support.com", label: "Contact", icon: Mail },
+      { to: "/", label: "Source Code", icon: Code },
+    ]},
+  ];
 
-    return (
-        <footer className="bg-muted/30 dark:bg-muted/10 border-t border-border/50 dark:border-border mt-20 relative overflow-hidden">
-            {/* Decorative background elements */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <motion.div
-                    animate={{
-                        scale: [1, 1.2, 1],
-                        opacity: [0.03, 0.05, 0.03],
-                    }}
-                    transition={{
-                        duration: 8,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                    }}
-                    className="absolute -top-1/2 -right-1/2 w-full h-full bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-full blur-3xl"
-                />
+  return (
+    <footer style={{
+      position: "relative",
+      background: "#020609",
+      borderTop: "1px solid rgba(0,230,150,0.15)",
+      overflow: "hidden",
+    }}>
+      {/* Matrix rain background */}
+      <canvas ref={canvasRef} style={{
+        position: "absolute", inset: 0,
+        width: "100%", height: "100%",
+        opacity: 0.35, pointerEvents: "none",
+      }} />
+
+      {/* Top glow line */}
+      <div style={{
+        position: "absolute", top: 0, left: 0, right: 0, height: "1px",
+        background: "linear-gradient(90deg, transparent, rgba(0,230,150,0.6), transparent)",
+        animation: "shimmerH 4s linear infinite",
+      }} />
+
+      <div style={{ position: "relative", zIndex: 1, maxWidth: "1200px", margin: "0 auto", padding: "3.5rem 1.5rem 2rem" }}>
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "2fr 1fr 1fr 1fr",
+          gap: "2.5rem",
+        }}>
+          {/* Brand */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "1rem" }}>
+              <div style={{
+                width: "38px", height: "38px",
+                background: "rgba(0,230,150,0.1)",
+                border: "1px solid rgba(0,230,150,0.4)",
+                borderRadius: "10px",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                boxShadow: "0 0 15px rgba(0,230,150,0.2)",
+              }}>
+                <Shield size={18} style={{ color: "#00e696", filter: "drop-shadow(0 0 4px #00e696)" }} />
+              </div>
+              <div>
+                <div style={{
+                  fontFamily: "'Orbitron', monospace",
+                  fontSize: "0.85rem", fontWeight: 900,
+                  background: "linear-gradient(135deg, #00e696, #00c882)",
+                  WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text",
+                }}>UCP_LIVE_GRADING</div>
+                <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: "0.6rem", color: "rgba(0,230,150,0.4)", letterSpacing: "0.12em" }}>v2.0 // MATRIX EDITION</div>
+              </div>
             </div>
-
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12 relative z-10">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                    {/* Brand */}
-                    <div className="space-y-4 sm:col-span-2 lg:col-span-2">
-                        <div className="flex items-center gap-2">
-                            <motion.div
-                                whileHover={{ rotate: 360 }}
-                                transition={{ duration: 0.6 }}
-                                className="p-2 bg-gradient-to-br from-blue-600 to-purple-600 dark:from-blue-500 dark:to-purple-500 rounded-lg shadow-lg"
-                            >
-                                <GraduationCap className="w-5 h-5 text-white" />
-                            </motion.div>
-                            <span className="font-semibold text-lg bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
-                                UCP Live Grading
-                            </span>
-                        </div>
-                        <p className="text-sm text-muted-foreground max-w-md">
-                            Real-time grading solutions for modern educators. Streamline your workflow,
-                            provide instant feedback, and focus on what matters most - your students.
-                        </p>
-
-                        {/* Contact Info Cards */}
-                        <div className="space-y-2 pt-2">
-                            {contactInfo.map((contact, index) => (
-                                <motion.a
-                                    key={index}
-                                    href={contact.href}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: index * 0.1 }}
-                                    whileHover={{ x: 5 }}
-                                    className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 dark:hover:bg-muted/20 transition-all group"
-                                >
-                                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600/10 to-purple-600/10 dark:from-blue-500/20 dark:to-purple-500/20 flex items-center justify-center group-hover:from-blue-600/20 group-hover:to-purple-600/20 dark:group-hover:from-blue-500/30 dark:group-hover:to-purple-500/30 transition-all">
-                                        <contact.icon className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                                    </div>
-                                    <div className="flex-1">
-                                        <div className="text-xs text-muted-foreground">{contact.label}</div>
-                                        <div className="text-sm font-medium break-all">{contact.value}</div>
-                                    </div>
-                                    <ExternalLink className="w-3 h-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
-                                </motion.a>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Product */}
-                    <div>
-                        <h4 className="font-semibold mb-4 flex items-center gap-2">
-                            <Code className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                            Product
-                        </h4>
-                        <ul className="space-y-3">
-                            <li>
-                                <a href="#" className="text-sm text-muted-foreground hover:text-foreground dark:hover:text-foreground transition-colors flex items-center gap-2 group">
-                                    <span className="w-1 h-1 rounded-full bg-blue-600 dark:bg-blue-400 opacity-0 group-hover:opacity-100 transition-opacity" />
-                                    Documentation
-                                </a>
-                            </li>
-                            <li>
-                                <Link to="/donate" className="text-sm text-muted-foreground hover:text-foreground dark:hover:text-foreground transition-colors flex items-center gap-2 group">
-                                    <span className="w-1 h-1 rounded-full bg-blue-600 dark:bg-blue-400 opacity-0 group-hover:opacity-100 transition-opacity" />
-                                    Support Us
-                                </Link>
-                            </li>
-                            <li>
-                                <a href="#" className="text-sm text-muted-foreground hover:text-foreground dark:hover:text-foreground transition-colors flex items-center gap-2 group">
-                                    <span className="w-1 h-1 rounded-full bg-blue-600 dark:bg-blue-400 opacity-0 group-hover:opacity-100 transition-opacity" />
-                                    Chrome Extension
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-
-                    {/* Support */}
-                    <div>
-                        <h4 className="font-semibold mb-4 flex items-center gap-2">
-                            <Heart className="w-4 h-4 text-pink-600 dark:text-pink-400" />
-                            Support
-                        </h4>
-                        <ul className="space-y-3">
-                            <li>
-                                <Link to="/donate" className="text-sm text-muted-foreground hover:text-foreground dark:hover:text-foreground transition-colors flex items-center gap-2 group">
-                                    <span className="w-1 h-1 rounded-full bg-pink-600 dark:bg-pink-400 opacity-0 group-hover:opacity-100 transition-opacity" />
-                                    Donate
-                                </Link>
-                            </li>
-                            <li>
-                                <a href="#" className="text-sm text-muted-foreground hover:text-foreground dark:hover:text-foreground transition-colors flex items-center gap-2 group">
-                                    <span className="w-1 h-1 rounded-full bg-pink-600 dark:bg-pink-400 opacity-0 group-hover:opacity-100 transition-opacity" />
-                                    Help Center
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" className="text-sm text-muted-foreground hover:text-foreground dark:hover:text-foreground transition-colors flex items-center gap-2 group">
-                                    <span className="w-1 h-1 rounded-full bg-pink-600 dark:bg-pink-400 opacity-0 group-hover:opacity-100 transition-opacity" />
-                                    Community
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                {/* Social Links Section */}
-                <div className="mt-12 pt-8 border-t border-border/50 dark:border-border">
-                    <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-                        <div className="flex items-center gap-2">
-                            <Sparkles className="w-4 h-4 text-purple-600 dark:text-purple-400" />
-                            <p className="text-sm text-muted-foreground">
-                                Connect with us on social media
-                            </p>
-                        </div>
-
-                        <div className="flex flex-wrap justify-center md:justify-end gap-3">
-                            {socialLinks.map((link, index) => (
-                                <motion.a
-                                    key={index}
-                                    href={link.href}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    initial={{ opacity: 0, scale: 0 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    transition={{ delay: index * 0.1 + 0.3, type: "spring", stiffness: 200 }}
-                                    whileHover={{ scale: 1.15, y: -3 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    className={`p-3 bg-gradient-to-br ${link.color} ${link.hoverColor} rounded-xl shadow-lg hover:shadow-xl transition-all relative group`}
-                                    aria-label={link.label}
-                                >
-                                    <link.icon className="w-5 h-5 text-white" />
-                                    <span className="absolute -top-10 left-1/2 -translate-x-1/2 px-3 py-1 bg-foreground text-background text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-                                        {link.label}
-                                    </span>
-                                </motion.a>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-
-                {/* Bottom Copyright */}
-                <div className="mt-8 pt-8 border-t border-border/50 dark:border-border">
-                    <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                        <p className="text-center md:text-left text-sm text-muted-foreground">
-                            © 2026 UCP Live Grading. All rights reserved.
-                        </p>
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <span>Made with</span>
-                            <motion.div
-                                animate={{
-                                    scale: [1, 1.2, 1],
-                                }}
-                                transition={{
-                                    duration: 1,
-                                    repeat: Infinity,
-                                    ease: "easeInOut",
-                                }}
-                            >
-                                <Heart className="w-4 h-4 text-pink-600 dark:text-pink-400 fill-pink-600 dark:fill-pink-400" />
-                            </motion.div>
-                            <span>by MUHAMMAD SAAD AKRAM</span>
-                        </div>
-                    </div>
-                </div>
+            <p style={{ fontSize: "0.83rem", lineHeight: 1.75, color: "rgba(120,200,160,0.6)", maxWidth: "32ch", marginBottom: "1.25rem" }}>
+              Real-time grade tracking for UCP students. Built with precision, secured with encryption.
+            </p>
+            <div style={{ display: "flex", gap: "0.6rem" }}>
+              {[Github, Mail, Code].map((Icon, i) => (
+                <motion.a
+                  key={i}
+                  href={i === 0 ? "https://github.com/msaadakram" : i === 1 ? "mailto:ucplivegrading@support.com" : "/"}
+                  target={i === 0 ? "_blank" : undefined}
+                  rel="noopener noreferrer"
+                  whileHover={{ scale: 1.15, y: -2 }}
+                  style={{
+                    width: "36px", height: "36px",
+                    background: "rgba(0,230,150,0.07)",
+                    border: "1px solid rgba(0,230,150,0.2)",
+                    borderRadius: "8px",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    color: "rgba(0,230,150,0.7)",
+                    transition: "all 150ms ease",
+                  }}
+                  onMouseOver={e => { e.currentTarget.style.borderColor = "rgba(0,230,150,0.6)"; e.currentTarget.style.boxShadow = "0 0 12px rgba(0,230,150,0.3)"; }}
+                  onMouseOut={e => { e.currentTarget.style.borderColor = "rgba(0,230,150,0.2)"; e.currentTarget.style.boxShadow = "none"; }}
+                >
+                  <Icon size={15} />
+                </motion.a>
+              ))}
             </div>
-        </footer>
-    );
+          </motion.div>
+
+          {/* Link groups */}
+          {links.map((group, gi) => (
+            <motion.div
+              key={group.group}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: (gi + 1) * 0.08 }}
+            >
+              <div style={{
+                fontFamily: "'Orbitron', monospace",
+                fontSize: "0.65rem", fontWeight: 800,
+                letterSpacing: "0.14em", textTransform: "uppercase",
+                color: "#00e696", marginBottom: "1rem",
+              }}>{group.group}</div>
+              <ul style={{ listStyle: "none", padding: 0, display: "flex", flexDirection: "column", gap: "6px" }}>
+                {group.items.map(({ to, href, label, icon: Icon }) => (
+                  <li key={label}>
+                    {href ? (
+                      <a href={href} target="_blank" rel="noopener noreferrer" style={{ display: "flex", alignItems: "center", gap: "7px", fontSize: "0.82rem", color: "rgba(120,200,160,0.65)", textDecoration: "none", padding: "4px 0", transition: "color 150ms ease" }}
+                        onMouseOver={e => e.currentTarget.style.color = "#00e696"}
+                        onMouseOut={e => e.currentTarget.style.color = "rgba(120,200,160,0.65)"}
+                      ><Icon size={12} />{label}</a>
+                    ) : (
+                      <Link to={to} style={{ display: "flex", alignItems: "center", gap: "7px", fontSize: "0.82rem", color: "rgba(120,200,160,0.65)", textDecoration: "none", padding: "4px 0", transition: "color 150ms ease" }}
+                        onMouseOver={e => e.currentTarget.style.color = "#00e696"}
+                        onMouseOut={e => e.currentTarget.style.color = "rgba(120,200,160,0.65)"}
+                      ><Icon size={12} />{label}</Link>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Bottom bar */}
+        <div style={{
+          marginTop: "2.5rem", paddingTop: "1.5rem",
+          borderTop: "1px solid rgba(0,230,150,0.08)",
+          display: "flex", justifyContent: "space-between", alignItems: "center",
+          flexWrap: "wrap", gap: "0.75rem",
+        }}>
+          <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: "0.75rem", color: "rgba(0,230,150,0.35)" }}>
+            &copy; 2026 UCP Live Grading // Built by Muhammad Saad Akram
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            <span style={{ width: "6px", height: "6px", background: "#00e696", borderRadius: "50%", boxShadow: "0 0 6px #00e696", animation: "neonPulse 2s ease-in-out infinite", display: "inline-block" }} />
+            <span style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: "0.72rem", color: "rgba(0,230,150,0.5)" }}>SYSTEM ONLINE</span>
+          </div>
+        </div>
+      </div>
+
+      <style>{`
+        @keyframes shimmerH { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+        @keyframes neonPulse { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
+        @media (max-width: 768px) {
+          footer > div > div:first-child > div:first-child { grid-template-columns: 1fr 1fr !important; }
+        }
+      `}</style>
+    </footer>
+  );
 }
