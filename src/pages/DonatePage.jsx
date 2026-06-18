@@ -1,603 +1,371 @@
-import { useEffect, useRef, useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link } from "react-router-dom";
 import {
-  Heart, Coffee, Code, Star, Gift, Users, Shield, CheckCircle2,
-  Sparkles, ArrowLeft, Zap, ArrowRight, Terminal, Cpu,
-  TrendingUp, Lock, Database, DollarSign, Send, MessageSquare,
-  ChevronDown, Target
+  Heart, DollarSign, Coffee, Code, Star, Gift, Shield, TrendingUp,
+  Lock, Database, Users, Target, CheckCircle2, Send, ArrowRight,
+  ArrowLeft, Terminal, Copy, Check, Bitcoin, Zap, Smartphone,
+  CreditCard, Globe, Wallet,
 } from "lucide-react";
-import { Navigation } from "../components/Navigation";
-import { Footer } from "../components/Footer";
 
-/* ─── Matrix Rain ─────────────────────────────────────── */
-function MatrixRain({ opacity = 0.13 }) {
-  const ref = useRef(null);
+/* ── Matrix Rain ── */
+function MatrixRain() {
+  const canvasRef = useRef(null);
   useEffect(() => {
-    const c = ref.current; if (!c) return;
-    const ctx = c.getContext("2d");
-    let id;
-    const resize = () => { c.width = window.innerWidth; c.height = window.innerHeight; };
-    resize(); window.addEventListener("resize", resize);
-    const chars = "アイウエオカキクケコ01234ABCDEFabcdef</>{}$#@!+-*";
-    const fs = 13;
-    let drops = [];
-    const initDrops = () => { drops = Array.from({ length: Math.floor(c.width / fs) }, () => Math.random() * -100); };
-    initDrops();
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    let animId;
+    const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+    resize();
+    window.addEventListener("resize", resize);
+    const chars = "アイウエオカキクケコ0123456789ABCDEF</>{}[]";
+    const fontSize = 13;
+    let cols = Math.floor(canvas.width / fontSize);
+    let drops = Array.from({ length: cols }, () => Math.random() * -100);
     const draw = () => {
-      ctx.fillStyle = "rgba(2,6,9,0.045)";
-      ctx.fillRect(0, 0, c.width, c.height);
-      if (drops.length !== Math.floor(c.width / fs)) initDrops();
-      ctx.font = `${fs}px monospace`;
+      ctx.fillStyle = "rgba(0,0,0,0.04)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      cols = Math.floor(canvas.width / fontSize);
+      if (drops.length !== cols) drops = Array.from({ length: cols }, () => Math.random() * -100);
+      ctx.font = `${fontSize}px monospace`;
       drops.forEach((y, i) => {
-        const r = Math.random();
-        ctx.fillStyle = r > 0.97 ? "#ffffff" : r > 0.82 ? "#00f5d4" : r > 0.5 ? "rgba(0,230,150,0.8)" : "rgba(0,180,110,0.35)";
-        ctx.fillText(chars[Math.floor(Math.random() * chars.length)], i * fs, y * fs);
-        if (y * fs > c.height && Math.random() > 0.975) drops[i] = 0;
-        drops[i] += 0.55;
+        const char = chars[Math.floor(Math.random() * chars.length)];
+        const b = Math.random();
+        ctx.fillStyle = b > 0.95 ? "#ffffff" : b > 0.8 ? "#00ffaa" : "rgba(0,200,130,0.6)";
+        ctx.fillText(char, i * fontSize, y * fontSize);
+        if (y * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+        drops[i] += 0.5;
       });
-      id = requestAnimationFrame(draw);
+      animId = requestAnimationFrame(draw);
     };
     draw();
-    return () => { cancelAnimationFrame(id); window.removeEventListener("resize", resize); };
+    return () => { cancelAnimationFrame(animId); window.removeEventListener("resize", resize); };
   }, []);
-  return <canvas ref={ref} style={{ position: "fixed", inset: 0, zIndex: 0, opacity, pointerEvents: "none" }} />;
+  return <canvas ref={canvasRef} style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", zIndex: 0, opacity: 0.18, pointerEvents: "none" }} />;
 }
 
-/* ─── Glow Orbs ───────────────────────────────────────── */
+/* ── Glow Orbs ── */
 function GlowOrbs() {
-  const orbs = [
-    { top: "10%", left: "5%",  size: 450, color: "rgba(0,230,150,0.055)", delay: 0 },
-    { top: "55%", right: "4%", size: 500, color: "rgba(0,212,170,0.035)", delay: 3 },
-    { top: "80%", left: "25%", size: 360, color: "rgba(0,180,110,0.045)", delay: 6 },
-  ];
   return (
     <div style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none", overflow: "hidden" }}>
-      {orbs.map((o, i) => (
-        <motion.div key={i}
-          animate={{ scale: [1, 1.15, 0.92, 1], x: [0, 30, -20, 0], y: [0, -40, 25, 0] }}
-          transition={{ duration: 14 + i * 3, delay: o.delay, repeat: Infinity, ease: "easeInOut" }}
-          style={{
-            position: "absolute", top: o.top, left: o.left, right: o.right,
-            width: o.size, height: o.size, borderRadius: "50%",
-            background: `radial-gradient(circle, ${o.color} 0%, transparent 70%)`,
-            filter: "blur(40px)",
-          }}
-        />
-      ))}
+      <div style={{ position: "absolute", top: "15%", left: "10%", width: "400px", height: "400px", background: "radial-gradient(circle, rgba(0,200,130,0.06) 0%, transparent 70%)", borderRadius: "50%" }} />
+      <div style={{ position: "absolute", bottom: "20%", right: "8%", width: "300px", height: "300px", background: "radial-gradient(circle, rgba(0,150,200,0.04) 0%, transparent 70%)", borderRadius: "50%" }} />
     </div>
   );
 }
 
-/* ─── CyberCard ───────────────────────────────────────── */
-function CyberCard({ children, style = {}, delay = 0, hover = true, glowColor = "rgba(0,230,150,0.07)" }) {
+/* ── CyberCard ── */
+function CyberCard({ children, style = {}, glowColor = "rgba(0,200,130,0.15)" }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.55, delay, ease: "easeOut" }}
-      whileHover={hover ? { y: -4, borderColor: "rgba(0,230,150,0.4)", boxShadow: "0 0 30px rgba(0,230,150,0.1), 0 20px 60px rgba(0,0,0,0.5)" } : {}}
+      whileHover={{ y: -3, boxShadow: `0 16px 48px ${glowColor}, 0 0 0 1px rgba(0,200,130,0.2)` }}
       style={{
-        background: "rgba(5,15,22,0.88)",
-        border: "1px solid rgba(0,230,150,0.14)",
+        background: "linear-gradient(135deg, rgba(10,20,16,0.95) 0%, rgba(5,12,10,0.98) 100%)",
+        border: "1px solid rgba(0,200,130,0.15)",
         borderRadius: "16px",
-        backdropFilter: "blur(8px)",
-        position: "relative", overflow: "hidden",
-        transition: "all 200ms ease",
+        overflow: "hidden",
+        position: "relative",
+        transition: "box-shadow 300ms ease",
         ...style,
       }}
     >
-      <div style={{
-        position: "absolute", top: 0, left: 0,
-        width: "110px", height: "110px",
-        background: `radial-gradient(circle at top left, ${glowColor}, transparent 70%)`,
-        pointerEvents: "none",
-      }} />
+      <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "2px", background: "linear-gradient(90deg, transparent, rgba(0,200,130,0.6), transparent)" }} />
+      <div style={{ position: "absolute", top: 0, left: 0, width: "80px", height: "80px", background: "radial-gradient(circle at top left, rgba(0,200,130,0.08), transparent 70%)", pointerEvents: "none" }} />
       {children}
     </motion.div>
   );
 }
 
-/* ─── Section ─────────────────────────────────────────── */
-function Section({ children, style = {} }) {
-  return <section style={{ position: "relative", zIndex: 1, ...style }}>{children}</section>;
+/* ── NeonBadge ── */
+function NeonBadge({ children, color = "#00c882" }) {
+  return (
+    <span style={{ display: "inline-flex", alignItems: "center", gap: "5px", background: `rgba(0,200,130,0.08)`, border: `1px solid rgba(0,200,130,0.3)`, color, fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", padding: "3px 10px", borderRadius: "100px" }}>
+      <span style={{ width: "5px", height: "5px", background: color, borderRadius: "50%", boxShadow: `0 0 6px ${color}`, animation: "neonPulse 2s ease-in-out infinite", display: "inline-block" }} />
+      {children}
+    </span>
+  );
 }
 
-/* ─── Neon Badge ──────────────────────────────────────── */
-function NeonBadge({ children }) {
+/* ── CopyButton ── */
+function CopyButton({ text }) {
+  const [copied, setCopied] = useState(false);
+  const handleCopy = () => {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
   return (
-    <div style={{
-      display: "inline-flex", alignItems: "center", gap: "6px",
-      background: "rgba(0,230,150,0.08)", border: "1px solid rgba(0,230,150,0.3)",
-      color: "#00e696", fontSize: "0.7rem", fontWeight: 700,
-      fontFamily: "'Share Tech Mono', monospace", letterSpacing: "0.12em",
-      padding: "5px 14px", borderRadius: "100px", marginBottom: "1rem",
-    }}>
-      <span style={{ width: "6px", height: "6px", background: "#00e696", borderRadius: "50%", boxShadow: "0 0 8px #00e696", animation: "neonPulse 2s infinite", display: "inline-block" }} />
-      {children}
+    <motion.button
+      onClick={handleCopy}
+      whileHover={{ scale: 1.08 }}
+      whileTap={{ scale: 0.92 }}
+      style={{
+        background: copied ? "rgba(0,200,130,0.15)" : "rgba(255,255,255,0.06)",
+        border: `1px solid ${copied ? "rgba(0,200,130,0.4)" : "rgba(255,255,255,0.12)"}`,
+        borderRadius: "8px",
+        padding: "6px 10px",
+        cursor: "pointer",
+        display: "flex",
+        alignItems: "center",
+        gap: "5px",
+        color: copied ? "#00c882" : "#64748b",
+        fontSize: "0.75rem",
+        fontWeight: 600,
+        flexShrink: 0,
+        transition: "all 200ms ease",
+      }}
+    >
+      {copied ? <Check size={13} /> : <Copy size={13} />}
+      {copied ? "Copied!" : "Copy"}
+    </motion.button>
+  );
+}
+
+/* ── AnimatedAddress ── */
+function AnimatedAddress({ address, color = "#00c882" }) {
+  const [revealed, setRevealed] = useState(false);
+  const [displayChars, setDisplayChars] = useState([]);
+  const CHARS = "ABCDEF0123456789abcdefghijklmnopqrstuvwxyz";
+
+  useEffect(() => {
+    if (!revealed) { setDisplayChars([]); return; }
+    let i = 0;
+    const interval = setInterval(() => {
+      if (i >= address.length) { clearInterval(interval); setDisplayChars(address.split("")); return; }
+      setDisplayChars(prev => {
+        const next = [...prev];
+        next[i] = address[i];
+        // scramble upcoming chars
+        for (let j = i + 1; j < Math.min(i + 4, address.length); j++) {
+          next[j] = CHARS[Math.floor(Math.random() * CHARS.length)];
+        }
+        return next;
+      });
+      i++;
+    }, 28);
+    return () => clearInterval(interval);
+  }, [revealed, address]);
+
+  return (
+    <div style={{ marginTop: "0.6rem" }}>
+      {!revealed ? (
+        <motion.button
+          onClick={() => setRevealed(true)}
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.97 }}
+          style={{ background: `rgba(0,200,130,0.07)`, border: `1px dashed rgba(0,200,130,0.3)`, borderRadius: "10px", padding: "10px 18px", cursor: "pointer", color: color, fontSize: "0.82rem", fontWeight: 600, display: "flex", alignItems: "center", gap: "8px", width: "100%", justifyContent: "center" }}
+        >
+          <Wallet size={14} /> Click to Reveal Address
+        </motion.button>
+      ) : (
+        <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}
+          style={{ background: "rgba(0,0,0,0.4)", border: `1px solid rgba(0,200,130,0.2)`, borderRadius: "10px", padding: "10px 14px", display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}
+        >
+          <code style={{ flex: 1, fontSize: "0.72rem", fontFamily: "'Courier New', monospace", color, wordBreak: "break-all", letterSpacing: "0.04em", lineHeight: 1.6 }}>
+            {displayChars.join("") || address}
+          </code>
+          <CopyButton text={address} />
+        </motion.div>
+      )}
     </div>
   );
 }
 
-/* ─── Main Donate Page ────────────────────────────────── */
+/* ── Payment Method Card ── */
+function PaymentCard({ icon: Icon, title, subtitle, badge, color, glowColor, children }) {
+  return (
+    <CyberCard glowColor={glowColor} style={{ padding: "1.5rem" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "1rem" }}>
+        <div style={{ width: "44px", height: "44px", background: `${color}18`, border: `1px solid ${color}40`, borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: `0 0 16px ${color}20` }}>
+          <Icon size={20} color={color} strokeWidth={2} />
+        </div>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: "1rem", fontWeight: 700, color: "#e2e8f0", marginBottom: "2px" }}>{title}</div>
+          <div style={{ fontSize: "0.78rem", color: "#64748b" }}>{subtitle}</div>
+        </div>
+        {badge && <NeonBadge color={color}>{badge}</NeonBadge>}
+      </div>
+      {children}
+    </CyberCard>
+  );
+}
+
 export function DonatePage() {
-  const [selectedAmount, setSelectedAmount] = useState(10);
-  const [customAmount, setCustomAmount]     = useState("");
-  const [donorName, setDonorName]           = useState("");
-  const [message, setMessage]               = useState("");
-  const [donated, setDonated]               = useState(false);
-  const [termLines, setTermLines]           = useState([]);
+  const [donateSuccess, setDonateSuccess] = useState(false);
+  const [selectedAmount, setSelectedAmount] = useState(500);
+  const [customAmount, setCustomAmount] = useState("");
 
-  useEffect(() => { window.scrollTo(0, 0); }, []);
+  const amounts = [100, 250, 500, 1000, 2500];
 
-  // Terminal boot sequence
-  useEffect(() => {
-    const lines = [
-      "> DONATION_MODULE.SYS LOADED...",
-      "> PAYMENT GATEWAY: SECURE",
-      "> ENCRYPTION: TLS 1.3 ACTIVE",
-      "> FUND TRACKER: ONLINE",
-      "> THANK YOU FOR SUPPORTING UCP ♥",
-    ];
-    let i = 0;
-    const t = setInterval(() => {
-      if (i < lines.length) { setTermLines(p => [...p, lines[i]]); i++; }
-      else clearInterval(t);
-    }, 480);
-    return () => clearInterval(t);
-  }, []);
-
-  const amounts = [5, 10, 25, 50, 100];
-  const finalAmount = customAmount || selectedAmount;
-
-  const handleDonate = () => {
-    setDonated(true);
-    setTimeout(() => setDonated(false), 4000);
-    setDonorName(""); setMessage(""); setCustomAmount("");
-  };
-
-  const tiers = [
-    { icon: Coffee,    amount: "$5",   label: "BUY A COFFEE",      desc: "Keeps the dev fuelled and coding into the night.",     color: "linear-gradient(135deg,#f59e0b,#d97706)" },
-    { icon: Code,      amount: "$25",  label: "WEEK OF DEV",       desc: "Funds one week of feature development work.",          color: "linear-gradient(135deg,#3b82f6,#06b6d4)" },
-    { icon: Star,      amount: "$50",  label: "NEW FEATURE",       desc: "Help ship one new leaderboard or analytics feature.",   color: "linear-gradient(135deg,#8b5cf6,#ec4899)" },
-    { icon: Gift,      amount: "$100+",label: "PREMIUM SUPPORTER", desc: "You become a named sponsor in the extension credits.",   color: "linear-gradient(135deg,#00c882,#00e696)" },
+  const whyItems = [
+    { Icon: Coffee, label: "Keep servers running", desc: "Hosting, DB, CDN costs for all UCP students" },
+    { Icon: Code,   label: "New features faster",  desc: "GPA predictor, AI insights, push notifications" },
+    { Icon: Shield, label: "Security audits",       desc: "Regular penetration testing & code reviews" },
+    { Icon: TrendingUp, label: "Scale to all UCP",  desc: "Expand leaderboard to every department" },
   ];
 
-  const allocation = [
-    { label: "Development",        pct: 60, color: "#00e696" },
-    { label: "Server & Hosting",   pct: 25, color: "#00c882" },
-    { label: "Community Support",  pct: 15, color: "#00d4aa" },
-  ];
-
-  const reasons = [
-    { icon: Shield,        text: "Keep the extension free for all UCP students" },
-    { icon: TrendingUp,    text: "Fund new leaderboard & analytics features"    },
-    { icon: Database,      text: "Cover server, database and hosting costs"     },
-    { icon: Users,         text: "Grow the open-source community around UCP"   },
-    { icon: Lock,          text: "Maintain enterprise-grade encryption & security" },
-    { icon: Target,        text: "Ship faster with dedicated development time"  },
+  const impactTiers = [
+    { amount: "Rs. 100",  Icon: Coffee,   label: "Coffee Tier",   desc: "Keeps the server alive for a week",       color: "#f59e0b" },
+    { amount: "Rs. 500",  Icon: Code,     label: "Dev Tier",      desc: "Funds a new feature build",               color: "#00c882" },
+    { amount: "Rs. 1000", Icon: Star,     label: "Star Tier",     desc: "Monthly hosting + backups covered",       color: "#8b5cf6" },
+    { amount: "Rs. 2500", Icon: Target,   label: "Champion Tier", desc: "Security audit + major upgrade sprint",   color: "#ef4444" },
   ];
 
   return (
-    <div style={{ minHeight: "100vh", background: "#020609", overflowX: "hidden", fontFamily: "'Orbitron', monospace" }}>
-      <MatrixRain opacity={0.13} />
+    <div style={{ minHeight: "100vh", background: "#020609", color: "#e2e8f0", fontFamily: "'Orbitron','Share Tech Mono',monospace", position: "relative", paddingTop: "60px" }}>
+      <MatrixRain />
       <GlowOrbs />
-      <Navigation />
 
-      {/* ═══════════ HERO ═══════════ */}
-      <Section style={{ padding: "110px 1.5rem 60px", textAlign: "center" }}>
-        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65 }}>
-          <Link to="/" style={{ display: "inline-flex", alignItems: "center", gap: "6px", textDecoration: "none", color: "rgba(0,230,150,0.5)", fontSize: "0.72rem", fontFamily: "'Share Tech Mono', monospace", letterSpacing: "0.08em", marginBottom: "2rem" }}>
-            <ArrowLeft size={13} /> BACK_TO_HOME
-          </Link>
-
-          <div style={{ marginBottom: "1.5rem" }}>
-            <NeonBadge>COMMUNITY SUPPORTED // OPEN SOURCE</NeonBadge>
+      {/* ── Hero ── */}
+      <div style={{ position: "relative", zIndex: 1, padding: "5rem 2rem 3rem", textAlign: "center" }}>
+        <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.15, type: "spring", stiffness: 180 }} style={{ display: "inline-block", marginBottom: "1.5rem" }}>
+          <div style={{ width: "80px", height: "80px", margin: "0 auto", background: "linear-gradient(135deg, rgba(0,200,130,0.15), rgba(0,200,130,0.05))", border: "1px solid rgba(0,200,130,0.45)", borderRadius: "20px", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 0 40px rgba(0,200,130,0.25)" }}>
+            <Heart size={36} color="#00c882" strokeWidth={1.75} />
           </div>
-
-          {/* Animated heart icon */}
-          <motion.div
-            animate={{ scale: [1, 1.12, 1] }}
-            transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-            style={{
-              display: "inline-flex", alignItems: "center", justifyContent: "center",
-              width: "80px", height: "80px",
-              background: "rgba(0,200,130,0.1)",
-              border: "1px solid rgba(0,230,150,0.35)",
-              borderRadius: "20px",
-              marginBottom: "1.75rem",
-              boxShadow: "0 0 40px rgba(0,230,150,0.15)",
-            }}
-          >
-            <Heart size={38} style={{ color: "#00e696", filter: "drop-shadow(0 0 10px #00e696)" }} fill="rgba(0,230,150,0.2)" />
-          </motion.div>
-
-          <h1 style={{
-            fontSize: "clamp(2rem, 5vw, 4rem)",
-            fontWeight: 900, lineHeight: 1.08,
-            letterSpacing: "-0.01em",
-            marginBottom: "1.25rem",
-          }}>
-            <span style={{ color: "#e8f5f0" }}>SUPPORT THE</span>{" "}
-            <span style={{
-              background: "linear-gradient(135deg, #00e696 0%, #00c882 40%, #00f5d4 80%)",
-              WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text",
-              backgroundSize: "200% auto", animation: "shimmerH 3s linear infinite",
-            }}>MISSION.</span>
+        </motion.div>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25, duration: 0.6 }}>
+          <NeonBadge>Open Source · Student Built</NeonBadge>
+          <h1 style={{ fontSize: "clamp(2rem,5vw,3.5rem)", fontWeight: 900, lineHeight: 1.1, margin: "1.25rem 0 1rem", letterSpacing: "-0.02em" }}>
+            <span style={{ color: "#e2e8f0" }}>Support </span>
+            <span style={{ background: "linear-gradient(135deg, #00c882, #00a86b)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>UCP Live Grading</span>
           </h1>
-          <p style={{
-            fontSize: "1rem", lineHeight: 1.75,
-            color: "rgba(120,200,160,0.65)",
-            maxWidth: "52ch", margin: "0 auto",
-            fontFamily: "'Share Tech Mono', monospace",
-            fontWeight: 400,
-          }}>
-            Built by a UCP student, for UCP students. Your support keeps servers running,
-            features shipping, and the mission alive — 100% transparent.
+          <p style={{ fontSize: "1.05rem", lineHeight: 1.7, color: "#64748b", maxWidth: "56ch", margin: "0 auto" }}>
+            Built by a UCP student, for UCP students — 100% free, no ads, no selling your data. Your support keeps it alive and growing.
           </p>
         </motion.div>
-      </Section>
+      </div>
 
-      {/* ═══════════ MAIN CONTENT ═══════════ */}
-      <Section style={{ padding: "0 1.5rem 80px" }}>
-        <div style={{ maxWidth: "1160px", margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "2rem", alignItems: "start" }}>
+      {/* ── Main Grid ── */}
+      <div style={{ position: "relative", zIndex: 1, maxWidth: "1200px", margin: "0 auto", padding: "0 1.5rem 5rem", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "2rem", alignItems: "start" }} className="donate-grid">
 
-          {/* ─── LEFT: Donation Form ─── */}
-          <CyberCard style={{ padding: "2.25rem" }} delay={0.1} hover={false}>
-            {/* Card header */}
-            <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "2rem", paddingBottom: "1rem", borderBottom: "1px solid rgba(0,230,150,0.1)" }}>
-              <div style={{ width: "36px", height: "36px", background: "rgba(0,230,150,0.12)", border: "1px solid rgba(0,230,150,0.3)", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <DollarSign size={18} style={{ color: "#00e696" }} />
-              </div>
-              <div>
-                <div style={{ fontSize: "0.88rem", fontWeight: 700, color: "#e8f5f0", letterSpacing: "0.04em" }}>MAKE A DONATION</div>
-                <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: "0.65rem", color: "rgba(0,230,150,0.45)", marginTop: "2px" }}>// secure_payment_module</div>
-              </div>
+        {/* Left: Payment Methods */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+          <div style={{ marginBottom: "0.25rem" }}>
+            <div style={{ fontSize: "0.65rem", fontWeight: 800, letterSpacing: "0.14em", textTransform: "uppercase", color: "#00c882", marginBottom: "0.35rem" }}>Payment Methods</div>
+            <h2 style={{ fontSize: "1.4rem", fontWeight: 800, color: "#e2e8f0", margin: 0 }}>Choose Your Way to Give</h2>
+          </div>
+
+          {/* EasyPaisa */}
+          <PaymentCard icon={Smartphone} title="EasyPaisa" subtitle="Pakistan's #1 mobile wallet" badge="PKR" color="#00c882" glowColor="rgba(0,200,130,0.2)">
+            <div style={{ background: "rgba(0,200,130,0.05)", border: "1px solid rgba(0,200,130,0.15)", borderRadius: "10px", padding: "1rem" }}>
+              <div style={{ fontSize: "0.75rem", color: "#64748b", marginBottom: "4px", textTransform: "uppercase", letterSpacing: "0.08em" }}>Account Number</div>
+              <div style={{ fontSize: "1.4rem", fontWeight: 900, color: "#00c882", letterSpacing: "0.12em", fontFamily: "'Courier New', monospace" }}>0332 657 4555</div>
+              <div style={{ fontSize: "0.78rem", color: "#475569", marginTop: "4px" }}>Send to Mobile Account · EasyPaisa App</div>
             </div>
+          </PaymentCard>
 
-            {/* Amount selector */}
-            <div style={{ marginBottom: "1.75rem" }}>
-              <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: "0.7rem", color: "rgba(0,230,150,0.55)", letterSpacing: "0.1em", marginBottom: "0.75rem" }}>SELECT_AMOUNT</div>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "0.6rem", marginBottom: "0.75rem" }}>
-                {amounts.map(a => (
-                  <motion.button
-                    key={a}
-                    onClick={() => { setSelectedAmount(a); setCustomAmount(""); }}
-                    whileHover={{ scale: 1.04, y: -2 }}
-                    whileTap={{ scale: 0.96 }}
-                    style={{
-                      padding: "12px",
-                      borderRadius: "10px",
-                      border: selectedAmount === a && !customAmount
-                        ? "1px solid rgba(0,230,150,0.5)"
-                        : "1px solid rgba(0,230,150,0.1)",
-                      background: selectedAmount === a && !customAmount
-                        ? "rgba(0,230,150,0.1)"
-                        : "rgba(5,15,22,0.6)",
-                      cursor: "pointer",
-                      transition: "all 150ms ease",
-                      boxShadow: selectedAmount === a && !customAmount ? "0 0 16px rgba(0,230,150,0.15)" : "none",
-                    }}
-                  >
-                    <div style={{
-                      fontFamily: "'Orbitron', monospace",
-                      fontSize: "1.1rem", fontWeight: 900,
-                      color: selectedAmount === a && !customAmount ? "#00e696" : "rgba(120,200,160,0.6)",
-                      textShadow: selectedAmount === a && !customAmount ? "0 0 12px rgba(0,230,150,0.5)" : "none",
-                    }}>${a}</div>
-                  </motion.button>
-                ))}
-              </div>
+          {/* JazzCash */}
+          <PaymentCard icon={CreditCard} title="JazzCash" subtitle="Send via JazzCash mobile" badge="PKR" color="#f59e0b" glowColor="rgba(245,158,11,0.15)">
+            <div style={{ background: "rgba(245,158,11,0.05)", border: "1px solid rgba(245,158,11,0.15)", borderRadius: "10px", padding: "1rem" }}>
+              <div style={{ fontSize: "0.75rem", color: "#64748b", marginBottom: "4px", textTransform: "uppercase", letterSpacing: "0.08em" }}>Mobile Number</div>
+              <div style={{ fontSize: "1.4rem", fontWeight: 900, color: "#f59e0b", letterSpacing: "0.12em", fontFamily: "'Courier New', monospace" }}>0332 657 4555</div>
+              <div style={{ fontSize: "0.78rem", color: "#475569", marginTop: "4px" }}>JazzCash Mobile Account · Instant Transfer</div>
+            </div>
+          </PaymentCard>
 
-              {/* Custom amount */}
-              <div style={{ position: "relative" }}>
-                <DollarSign size={14} style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", color: "rgba(0,230,150,0.4)", pointerEvents: "none" }} />
-                <input
-                  type="number"
-                  placeholder="Custom amount..."
-                  value={customAmount}
-                  onChange={e => setCustomAmount(e.target.value)}
-                  style={{
-                    width: "100%",
-                    background: "rgba(0,230,150,0.03)",
-                    border: customAmount ? "1px solid rgba(0,230,150,0.4)" : "1px solid rgba(0,230,150,0.1)",
-                    borderRadius: "10px",
-                    padding: "11px 12px 11px 34px",
-                    color: customAmount ? "#e8f5f0" : "rgba(120,200,160,0.4)",
-                    fontFamily: "'Orbitron', monospace",
-                    fontSize: "0.85rem", outline: "none",
-                    transition: "border-color 150ms ease",
-                    boxSizing: "border-box",
-                  }}
-                />
+          {/* Bitcoin */}
+          <PaymentCard icon={Bitcoin} title="Bitcoin (BTC)" subtitle="On-chain Bitcoin payment" badge="CRYPTO" color="#f7931a" glowColor="rgba(247,147,26,0.15)">
+            <div style={{ background: "rgba(247,147,26,0.05)", border: "1px solid rgba(247,147,26,0.15)", borderRadius: "10px", padding: "1rem" }}>
+              <div style={{ fontSize: "0.75rem", color: "#64748b", marginBottom: "4px", textTransform: "uppercase", letterSpacing: "0.08em" }}>BTC Address · SegWit (bc1q)</div>
+              <AnimatedAddress address="bc1qfqmkdqa80fzhcadgt7ep58vwrphwahmjcm6t7a" color="#f7931a" />
+              <div style={{ marginTop: "0.6rem", display: "flex", alignItems: "center", gap: "6px", fontSize: "0.75rem", color: "#475569" }}>
+                <Globe size={12} color="#f7931a" /> Any BTC wallet · Minimum any amount
               </div>
             </div>
+          </PaymentCard>
 
-            {/* Name */}
-            <div style={{ marginBottom: "1.25rem" }}>
-              <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: "0.7rem", color: "rgba(0,230,150,0.55)", letterSpacing: "0.1em", marginBottom: "0.6rem" }}>DONOR_NAME // OPTIONAL</div>
-              <input
-                placeholder="Anonymous"
-                value={donorName}
-                onChange={e => setDonorName(e.target.value)}
-                style={{
-                  width: "100%",
-                  background: "rgba(0,230,150,0.03)",
-                  border: "1px solid rgba(0,230,150,0.1)",
-                  borderRadius: "10px",
-                  padding: "11px 14px",
-                  color: "#e8f5f0",
-                  fontFamily: "'Share Tech Mono', monospace",
-                  fontSize: "0.82rem", outline: "none",
-                  transition: "border-color 150ms ease",
-                  boxSizing: "border-box",
-                }}
-              />
+          {/* Ravencoin */}
+          <PaymentCard icon={Zap} title="Ravencoin (RVN)" subtitle="Community-first crypto" badge="CRYPTO" color="#384de3" glowColor="rgba(56,77,227,0.15)">
+            <div style={{ background: "rgba(56,77,227,0.06)", border: "1px solid rgba(56,77,227,0.2)", borderRadius: "10px", padding: "1rem" }}>
+              <div style={{ fontSize: "0.75rem", color: "#64748b", marginBottom: "4px", textTransform: "uppercase", letterSpacing: "0.08em" }}>RVN Address</div>
+              <AnimatedAddress address="RDMaQ1mTaQpW59wNUsnGYAyhRm4spAfKc3" color="#818cf8" />
+              <div style={{ marginTop: "0.6rem", display: "flex", alignItems: "center", gap: "6px", fontSize: "0.75rem", color: "#475569" }}>
+                <Globe size={12} color="#818cf8" /> Official Ravencoin wallet · KuCoin · Gate.io
+              </div>
             </div>
+          </PaymentCard>
+        </div>
 
-            {/* Message */}
-            <div style={{ marginBottom: "1.75rem" }}>
-              <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: "0.7rem", color: "rgba(0,230,150,0.55)", letterSpacing: "0.1em", marginBottom: "0.6rem" }}>MESSAGE // OPTIONAL</div>
-              <textarea
-                placeholder="> Why you're supporting us..."
-                value={message}
-                onChange={e => setMessage(e.target.value)}
-                rows={3}
-                style={{
-                  width: "100%",
-                  background: "rgba(0,230,150,0.03)",
-                  border: "1px solid rgba(0,230,150,0.1)",
-                  borderRadius: "10px",
-                  padding: "11px 14px",
-                  color: "#e8f5f0",
-                  fontFamily: "'Share Tech Mono', monospace",
-                  fontSize: "0.82rem", outline: "none",
-                  resize: "vertical",
-                  transition: "border-color 150ms ease",
-                  boxSizing: "border-box",
-                }}
-              />
-            </div>
+        {/* Right: Why Donate + Terminal + Impact */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
 
-            {/* CTA Button */}
-            <AnimatePresence mode="wait">
-              {donated ? (
-                <motion.div
-                  key="success"
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  exit={{ scale: 0.8, opacity: 0 }}
-                  style={{
-                    display: "flex", alignItems: "center", justifyContent: "center", gap: "10px",
-                    background: "rgba(0,230,150,0.1)",
-                    border: "1px solid rgba(0,230,150,0.4)",
-                    borderRadius: "12px",
-                    padding: "16px",
-                    boxShadow: "0 0 30px rgba(0,230,150,0.15)",
-                  }}
-                >
-                  <CheckCircle2 size={20} style={{ color: "#00e696" }} />
-                  <span style={{ fontFamily: "'Orbitron', monospace", fontSize: "0.8rem", fontWeight: 700, color: "#00e696" }}>THANK YOU! DONATION RECEIVED ✓</span>
+          {/* Why Donate */}
+          <CyberCard style={{ padding: "1.5rem" }}>
+            <div style={{ fontSize: "0.65rem", fontWeight: 800, letterSpacing: "0.14em", textTransform: "uppercase", color: "#00c882", marginBottom: "1rem" }}>Why Support?</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+              {whyItems.map(({ Icon, label, desc }, i) => (
+                <motion.div key={i} whileHover={{ x: 4 }} style={{ display: "flex", alignItems: "flex-start", gap: "12px", padding: "0.85rem", background: "rgba(0,200,130,0.04)", border: "1px solid rgba(0,200,130,0.1)", borderRadius: "10px" }}>
+                  <div style={{ width: "34px", height: "34px", background: "rgba(0,200,130,0.1)", border: "1px solid rgba(0,200,130,0.2)", borderRadius: "9px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                    <Icon size={16} color="#00c882" strokeWidth={2} />
+                  </div>
+                  <div>
+                    <div style={{ fontSize: "0.88rem", fontWeight: 700, color: "#e2e8f0", marginBottom: "2px" }}>{label}</div>
+                    <div style={{ fontSize: "0.78rem", color: "#64748b" }}>{desc}</div>
+                  </div>
                 </motion.div>
-              ) : (
-                <motion.button
-                  key="cta"
-                  onClick={handleDonate}
-                  whileHover={{ scale: 1.03, y: -3, boxShadow: "0 0 40px rgba(0,200,130,0.5), 0 0 80px rgba(0,200,130,0.2)" }}
-                  whileTap={{ scale: 0.97 }}
-                  style={{
-                    width: "100%",
-                    display: "flex", alignItems: "center", justifyContent: "center", gap: "9px",
-                    background: "linear-gradient(135deg, #00c882, #00a86b)",
-                    color: "#000", fontFamily: "'Orbitron', monospace",
-                    fontSize: "0.82rem", fontWeight: 900, letterSpacing: "0.06em",
-                    border: "none", borderRadius: "12px",
-                    padding: "16px",
-                    cursor: "pointer",
-                    boxShadow: "0 0 24px rgba(0,200,130,0.3)",
-                    transition: "all 200ms ease",
-                  }}
-                >
-                  <Heart size={16} fill="#000" />
-                  DONATE ${finalAmount}
-                  <ArrowRight size={15} />
-                </motion.button>
-              )}
-            </AnimatePresence>
-
-            <p style={{
-              fontFamily: "'Share Tech Mono', monospace",
-              fontSize: "0.66rem", color: "rgba(0,230,150,0.3)",
-              textAlign: "center", marginTop: "0.9rem",
-              letterSpacing: "0.04em",
-            }}>// TLS_ENCRYPTED // 100% GOES TO DEVELOPMENT</p>
+              ))}
+            </div>
           </CyberCard>
 
-          {/* ─── RIGHT: Info cards ─── */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-
-            {/* Terminal widget */}
-            <CyberCard style={{ overflow: "hidden" }} delay={0.15} hover={false}>
-              <div style={{ padding: "10px 16px", background: "rgba(0,230,150,0.05)", borderBottom: "1px solid rgba(0,230,150,0.1)", display: "flex", alignItems: "center", gap: "8px" }}>
-                {["#ff5f57", "#febc2e", "#28c840"].map((col, i) => <div key={i} style={{ width: "9px", height: "9px", borderRadius: "50%", background: col }} />)}
-                <div style={{ flex: 1 }} />
-                <Terminal size={11} style={{ color: "rgba(0,230,150,0.4)" }} />
-                <span style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: "0.62rem", color: "rgba(0,230,150,0.4)" }}>donation_tracker.exe</span>
+          {/* Terminal */}
+          <CyberCard style={{ padding: 0, overflow: "hidden" }}>
+            <div style={{ background: "rgba(0,0,0,0.5)", borderBottom: "1px solid rgba(0,200,130,0.15)", padding: "10px 14px", display: "flex", alignItems: "center", gap: "8px" }}>
+              <Terminal size={13} color="#00c882" />
+              <span style={{ fontSize: "0.72rem", color: "#64748b", fontFamily: "monospace" }}>donation_impact.sh</span>
+              <div style={{ display: "flex", gap: "5px", marginLeft: "auto" }}>
+                {["#ef4444", "#f59e0b", "#00c882"].map(c => <div key={c} style={{ width: "10px", height: "10px", background: c, borderRadius: "50%", opacity: 0.7 }} />)}
               </div>
-              <div style={{ padding: "1.1rem 1.4rem", minHeight: "120px" }}>
-                <AnimatePresence>
-                  {termLines.map((line, i) => (
-                    <motion.div key={i} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
-                      style={{
-                        fontFamily: "'Share Tech Mono', monospace", fontSize: "0.76rem", lineHeight: 1.9,
-                        color: i === termLines.length - 1 ? "#00f5d4" : "rgba(0,230,150,0.6)",
-                        textShadow: i === termLines.length - 1 ? "0 0 8px rgba(0,245,212,0.5)" : "none",
-                      }}
-                    >{line}</motion.div>
-                  ))}
-                </AnimatePresence>
-                <motion.span animate={{ opacity: [1, 0, 1] }} transition={{ duration: 1, repeat: Infinity }}
-                  style={{ display: "inline-block", width: "7px", height: "14px", background: "#00e696", verticalAlign: "middle", marginLeft: "2px", boxShadow: "0 0 6px #00e696" }}
-                />
-              </div>
-            </CyberCard>
-
-            {/* Donation tiers */}
-            <CyberCard style={{ padding: "1.75rem" }} delay={0.2}>
-              <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "1.25rem" }}>
-                <Sparkles size={16} style={{ color: "#00e696" }} />
-                <div style={{ fontSize: "0.82rem", fontWeight: 700, color: "#e8f5f0", letterSpacing: "0.04em" }}>YOUR IMPACT</div>
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-                {tiers.map((tier, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, x: 20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.25 + i * 0.08 }}
-                    whileHover={{ x: 6 }}
-                    style={{ display: "flex", alignItems: "flex-start", gap: "1rem" }}
-                  >
-                    <motion.div
-                      whileHover={{ rotate: 15 }}
-                      style={{
-                        width: "42px", height: "42px", flexShrink: 0,
-                        background: tier.color,
-                        borderRadius: "11px",
-                        display: "flex", alignItems: "center", justifyContent: "center",
-                        boxShadow: "0 0 16px rgba(0,230,150,0.15)",
-                      }}
-                    >
-                      <tier.icon size={20} style={{ color: "#000" }} />
-                    </motion.div>
-                    <div>
-                      <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "3px" }}>
-                        <span style={{ fontFamily: "'Orbitron', monospace", fontSize: "0.78rem", fontWeight: 900, color: "#00e696" }}>{tier.amount}</span>
-                        <span style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: "0.62rem", color: "rgba(0,230,150,0.45)", letterSpacing: "0.08em" }}>// {tier.label}</span>
-                      </div>
-                      <p style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: "0.76rem", lineHeight: 1.65, color: "rgba(120,200,160,0.58)", margin: 0 }}>{tier.desc}</p>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </CyberCard>
-
-            {/* Fund allocation */}
-            <CyberCard style={{ padding: "1.75rem" }} delay={0.25}>
-              <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "1.25rem" }}>
-                <TrendingUp size={16} style={{ color: "#00e696" }} />
-                <div style={{ fontSize: "0.82rem", fontWeight: 700, color: "#e8f5f0", letterSpacing: "0.04em" }}>WHERE DONATIONS GO</div>
-              </div>
-              {allocation.map((item, i) => (
-                <div key={i} style={{ marginBottom: i < allocation.length - 1 ? "1rem" : 0 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
-                    <span style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: "0.74rem", color: "rgba(120,200,160,0.7)" }}>{item.label}</span>
-                    <span style={{ fontFamily: "'Orbitron', monospace", fontSize: "0.74rem", fontWeight: 700, color: item.color }}>{item.pct}%</span>
-                  </div>
-                  <div style={{ height: "5px", background: "rgba(0,230,150,0.07)", borderRadius: "3px", overflow: "hidden" }}>
-                    <motion.div
-                      initial={{ width: 0 }}
-                      whileInView={{ width: `${item.pct}%` }}
-                      viewport={{ once: true }}
-                      transition={{ delay: 0.3 + i * 0.1, duration: 0.9 }}
-                      style={{
-                        height: "100%",
-                        background: `linear-gradient(90deg, ${item.color}, rgba(0,230,150,0.4))`,
-                        borderRadius: "3px",
-                        boxShadow: `0 0 6px ${item.color}`,
-                      }}
-                    />
-                  </div>
-                </div>
+            </div>
+            <div style={{ padding: "1rem 1.25rem", fontFamily: "'Courier New', monospace", fontSize: "0.78rem", lineHeight: 1.9 }}>
+              {[
+                { prompt: "$", cmd: "uptime --servers", out: "99.8% uptime · 2,400+ students served" },
+                { prompt: "$", cmd: "git log --features", out: "47 features shipped · 3 in progress" },
+                { prompt: "$", cmd: "check donations", out: "Each rupee → 1 student gets better grades" },
+                { prompt: "$", cmd: "status", out: "Extension: LIVE ✓  DB: SECURE ✓  FREE: ∞" },
+              ].map(({ prompt, cmd, out }, i) => (
+                <motion.div key={i} initial={{ opacity: 0, x: -10 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.12 }}>
+                  <div><span style={{ color: "#00c882" }}>{prompt} </span><span style={{ color: "#e2e8f0" }}>{cmd}</span></div>
+                  <div style={{ color: "#64748b", paddingLeft: "1.2rem" }}>{out}</div>
+                </motion.div>
               ))}
-            </CyberCard>
+            </div>
+          </CyberCard>
 
-            {/* Why donate */}
-            <CyberCard style={{ padding: "1.75rem" }} delay={0.3}>
-              <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "1.25rem" }}>
-                <CheckCircle2 size={16} style={{ color: "#00e696" }} />
-                <div style={{ fontSize: "0.82rem", fontWeight: 700, color: "#e8f5f0", letterSpacing: "0.04em" }}>WHY DONATE?</div>
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-                {reasons.map((r, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, x: 16 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.3 + i * 0.07 }}
-                    whileHover={{ x: 6 }}
-                    style={{ display: "flex", alignItems: "center", gap: "12px" }}
-                  >
-                    <r.icon size={15} style={{ color: "#00c882", flexShrink: 0 }} />
-                    <span style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: "0.78rem", color: "rgba(120,200,160,0.7)" }}>{r.text}</span>
-                  </motion.div>
-                ))}
-              </div>
-            </CyberCard>
+          {/* Impact Tiers */}
+          <CyberCard style={{ padding: "1.5rem" }}>
+            <div style={{ fontSize: "0.65rem", fontWeight: 800, letterSpacing: "0.14em", textTransform: "uppercase", color: "#00c882", marginBottom: "1rem" }}>Impact Tiers</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.65rem" }}>
+              {impactTiers.map(({ amount, Icon, label, desc, color }, i) => (
+                <motion.div key={i} whileHover={{ x: 4 }} style={{ display: "flex", alignItems: "center", gap: "12px", padding: "0.85rem 1rem", background: `${color}0a`, border: `1px solid ${color}22`, borderRadius: "10px" }}>
+                  <Icon size={18} color={color} strokeWidth={2} />
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: "0.85rem", fontWeight: 700, color: "#e2e8f0" }}>{label} <span style={{ color, marginLeft: "4px" }}>{amount}</span></div>
+                    <div style={{ fontSize: "0.75rem", color: "#64748b" }}>{desc}</div>
+                  </div>
+                  <div style={{ width: "100%", maxWidth: "80px", height: "4px", background: "rgba(255,255,255,0.06)", borderRadius: "4px", overflow: "hidden" }}>
+                    <motion.div initial={{ width: 0 }} whileInView={{ width: `${(i + 1) * 22}%` }} viewport={{ once: true }} transition={{ delay: i * 0.1 + 0.3 }} style={{ height: "100%", background: color, borderRadius: "4px", boxShadow: `0 0 8px ${color}` }} />
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </CyberCard>
+
+          {/* Security note */}
+          <div style={{ display: "flex", alignItems: "flex-start", gap: "10px", padding: "1rem", background: "rgba(0,200,130,0.04)", border: "1px solid rgba(0,200,130,0.12)", borderRadius: "12px" }}>
+            <Lock size={15} color="#00c882" style={{ marginTop: "2px", flexShrink: 0 }} />
+            <p style={{ margin: 0, fontSize: "0.78rem", color: "#64748b", lineHeight: 1.6 }}>
+              <strong style={{ color: "#94a3b8" }}>Privacy guaranteed.</strong> All crypto addresses belong exclusively to the developer. No middlemen. Donations go directly to server costs and development time.
+            </p>
           </div>
         </div>
-      </Section>
+      </div>
 
-      {/* ═══════════ TRUST BANNER ═══════════ */}
-      <Section style={{ padding: "0 1.5rem 80px" }}>
-        <div style={{ maxWidth: "1160px", margin: "0 auto" }}>
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            style={{
-              background: "rgba(0,230,150,0.03)",
-              border: "1px solid rgba(0,230,150,0.12)",
-              borderRadius: "16px",
-              padding: "1.75rem 2rem",
-              display: "grid",
-              gridTemplateColumns: "repeat(4, 1fr)",
-              gap: "1.5rem",
-              position: "relative", overflow: "hidden",
-            }}
-          >
-            {/* Scan line */}
-            <motion.div animate={{ x: ["-100%", "200%"] }} transition={{ duration: 3, repeat: Infinity, repeatDelay: 3 }}
-              style={{ position: "absolute", top: 0, bottom: 0, width: "2px", background: "linear-gradient(180deg,transparent,rgba(0,230,150,0.5),transparent)", pointerEvents: "none" }}
-            />
-            {[
-              { icon: Shield,       label: "TLS ENCRYPTED" },
-              { icon: Users,        label: "OPEN SOURCE" },
-              { icon: CheckCircle2, label: "100% TRANSPARENT" },
-              { icon: Heart,        label: "STUDENT BUILT" },
-            ].map((item, i) => (
-              <motion.div key={i}
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1, type: "spring" }}
-                whileHover={{ scale: 1.06 }}
-                style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "8px", textAlign: "center" }}
-              >
-                <item.icon size={22} style={{ color: "#00e696", filter: "drop-shadow(0 0 6px rgba(0,230,150,0.5))" }} />
-                <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: "0.68rem", color: "rgba(0,230,150,0.5)", letterSpacing: "0.08em" }}>{item.label}</div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </Section>
-
-      {/* Styles */}
       <style>{`
-        @keyframes shimmerH { 0%{background-position:-200% 0}100%{background-position:200% 0} }
-        @keyframes neonPulse { 0%,100%{opacity:1;box-shadow:0 0 8px #00e696}50%{opacity:.3;box-shadow:0 0 4px #00e696} }
-        input::placeholder, textarea::placeholder { color: rgba(0,180,110,0.3); }
-        input:focus, textarea:focus { border-color: rgba(0,230,150,0.35) !important; box-shadow: 0 0 0 2px rgba(0,230,150,0.07); }
-        @media(max-width:900px){
-          section > div > div[style*='grid-template-columns: 1fr 1fr'] { grid-template-columns: 1fr !important; }
-          section > div > div[style*='repeat(4, 1fr)'] { grid-template-columns: 1fr 1fr !important; }
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap');
+        @keyframes neonPulse { 0%,100%{opacity:1;box-shadow:0 0 6px currentColor;}50%{opacity:0.4;} }
+        @media(max-width:900px){.donate-grid{grid-template-columns:1fr !important;}}
       `}</style>
-
-      <Footer />
     </div>
   );
 }
