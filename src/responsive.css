@@ -1,0 +1,340 @@
+/* =====================================================
+   RESPONSIVE.CSS — Global mobile-first responsive layer
+   Covers: Navigation, DonatePage, PrivacyPolicyPage,
+           HomePage, LeaderboardPage, Footer
+   Breakpoints:
+     xs  : ≤ 480px  (small phones)
+     sm  : ≤ 640px  (phones)
+     md  : ≤ 768px  (tablets / large phones)
+     lg  : ≤ 1024px (small laptops)
+===================================================== */
+
+/* ─────────────────────────────────────────────────
+   1. GLOBAL BASE
+───────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body { overflow-x: hidden; }
+
+img, video, canvas, iframe { max-width: 100%; }
+
+/* Prevent long words / crypto addresses from breaking layout */
+code, pre, .address-text {
+  word-break: break-all;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+/* ─────────────────────────────────────────────────
+   2. NAVIGATION
+───────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .nav-desktop-links { display: none !important; }
+  .nav-install-btn .nav-install-text { display: none; }
+  .nav-burger { display: flex !important; }
+}
+
+/* ─────────────────────────────────────────────────
+   3. HOMEPAGE — hero, features, stats, cta
+───────────────────────────────────────────────── */
+
+/* Hero two-column → stacked */
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: center;
+}
+@media (max-width: 900px) {
+  .hero-grid {
+    grid-template-columns: 1fr !important;
+    text-align: center;
+  }
+  .hero-grid .hero-visual { order: -1; }
+}
+
+/* Features 3-col → 2-col → 1-col */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+@media (max-width: 900px) {
+  .features-grid { grid-template-columns: repeat(2, 1fr) !important; }
+}
+@media (max-width: 560px) {
+  .features-grid { grid-template-columns: 1fr !important; }
+}
+
+/* Stats 4-col → 2-col → 2-col on xs */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+@media (max-width: 900px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
+}
+
+/* Steps / how-it-works 3-col → 1-col */
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+@media (max-width: 900px) {
+  .steps-grid { grid-template-columns: 1fr !important; }
+}
+
+/* CTA button row wraps on small */
+.cta-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+@media (max-width: 480px) {
+  .cta-row {
+    flex-direction: column;
+    width: 100%;
+  }
+  .cta-row a,
+  .cta-row button {
+    width: 100% !important;
+    justify-content: center;
+  }
+}
+
+/* Section padding scale */
+.section-pad {
+  padding: clamp(3rem, 8vw, 6rem) clamp(1rem, 5vw, 2rem);
+}
+
+/* ─────────────────────────────────────────────────
+   4. DONATE PAGE
+───────────────────────────────────────────────── */
+.donate-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .donate-grid { grid-template-columns: 1fr !important; }
+}
+
+/* payment number — shrink on xs */
+@media (max-width: 480px) {
+  .payment-number {
+    font-size: 1.1rem !important;
+    letter-spacing: 0.06em !important;
+  }
+}
+
+/* Impact tiers bar hidden on xs to save space */
+@media (max-width: 480px) {
+  .tier-bar { display: none !important; }
+}
+
+/* ─────────────────────────────────────────────────
+   5. PRIVACY POLICY PAGE
+───────────────────────────────────────────────── */
+.pp-body-grid {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 2.5rem;
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .pp-body-grid { grid-template-columns: 1fr !important; }
+  .pp-toc { display: none !important; }
+}
+
+/* Privacy stats 4-col → 2-col → 2-col xs */
+.pp-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+@media (max-width: 900px) {
+  .pp-stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
+}
+
+/* Section card item grid 2-col → 1-col */
+.section-items-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 10px;
+}
+@media (max-width: 560px) {
+  .section-items-grid { grid-template-columns: 1fr !important; }
+}
+
+/* Trust badge row wraps */
+.trust-badges {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Hero buttons wrap */
+.pp-cta-row {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+@media (max-width: 480px) {
+  .pp-cta-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .pp-cta-row a {
+    justify-content: center;
+    text-align: center;
+  }
+}
+
+/* ─────────────────────────────────────────────────
+   6. FOOTER
+───────────────────────────────────────────────── */
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 2.5rem;
+}
+@media (max-width: 900px) {
+  .footer-grid { grid-template-columns: 1fr 1fr !important; gap: 2rem; }
+}
+@media (max-width: 560px) {
+  .footer-grid { grid-template-columns: 1fr !important; gap: 1.5rem; }
+}
+
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+@media (max-width: 560px) {
+  .footer-bottom { flex-direction: column; text-align: center; }
+}
+
+/* ─────────────────────────────────────────────────
+   7. CONSENT MODAL
+───────────────────────────────────────────────── */
+.consent-modal-inner {
+  width: 100%;
+  max-width: 500px;
+}
+@media (max-width: 480px) {
+  .consent-modal-inner {
+    max-width: 100% !important;
+    margin: 0 0.5rem;
+    border-radius: 14px !important;
+  }
+}
+
+/* ─────────────────────────────────────────────────
+   8. TYPOGRAPHY SCALE
+───────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  h1 { font-size: clamp(1.75rem, 7vw, 2.5rem) !important; }
+  h2 { font-size: clamp(1.25rem, 5vw, 1.75rem) !important; }
+  h3 { font-size: clamp(1rem, 4vw, 1.3rem) !important; }
+  body { font-size: 0.9rem; }
+}
+@media (max-width: 480px) {
+  h1 { font-size: clamp(1.5rem, 8vw, 2rem) !important; }
+  p  { max-width: 100% !important; }
+}
+
+/* ─────────────────────────────────────────────────
+   9. CARD PADDING SCALE
+───────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .card-pad,
+  [class*="CyberCard"],
+  .section-card {
+    padding: 1.1rem !important;
+  }
+}
+@media (max-width: 480px) {
+  .card-pad { padding: 0.9rem !important; }
+}
+
+/* ─────────────────────────────────────────────────
+   10. SCROLL PROGRESS (keep visible on all screens)
+───────────────────────────────────────────────── */
+.scroll-progress-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+/* ─────────────────────────────────────────────────
+   11. PAGE-LEVEL PADDING (paddingTop for fixed nav)
+───────────────────────────────────────────────── */
+.page-root {
+  padding-top: 60px;
+}
+
+/* ─────────────────────────────────────────────────
+   12. OVERFLOW SAFETY
+───────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  /* Canvas BG — no need to be wider than viewport */
+  canvas { max-width: 100vw !important; }
+
+  /* Any fixed-width inline sections */
+  [style*="width: 500px"],
+  [style*="width:500px"],
+  [style*="width: 400px"],
+  [style*="width:400px"] {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+/* ─────────────────────────────────────────────────
+   13. TABLE OVERFLOW
+───────────────────────────────────────────────── */
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.table-scroll table {
+  min-width: 540px;
+}
+
+/* ─────────────────────────────────────────────────
+   14. REDUCED MOTION
+───────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ─────────────────────────────────────────────────
+   15. TOUCH TARGETS
+───────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  button, a, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  /* Override for icon-only small buttons */
+  .btn-icon-sm {
+    min-height: 36px !important;
+    min-width: 36px !important;
+  }
+}
