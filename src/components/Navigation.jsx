@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Home, ShieldCheck, HeartHandshake,
-  Download, Menu, X, GraduationCap, Trophy,
+  Download, Menu, X, GraduationCap,
 } from "lucide-react";
 
 /* ─── responsive hook ─────────────────────────────── */
@@ -21,10 +21,9 @@ function useIsMobile(breakpoint = 768) {
 }
 
 const NAV_LINKS = [
-  { to: "/",           label: "Home",        Icon: Home },
-  { to: "/privacy",    label: "Privacy",     Icon: ShieldCheck },
-  { to: "/leaderboard",label: "Leaderboard", Icon: Trophy },
-  { to: "/donate",     label: "Support",     Icon: HeartHandshake },
+  { to: "/",        label: "Home",    Icon: Home },
+  { to: "/privacy", label: "Privacy", Icon: ShieldCheck },
+  { to: "/donate",  label: "Support", Icon: HeartHandshake },
 ];
 
 const INSTALL_URL =
@@ -144,23 +143,19 @@ export function Navigation() {
   const location                = useLocation();
   const isMobile                = useIsMobile(768);
 
-  /* scroll listener */
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", fn, { passive: true });
     return () => window.removeEventListener("scroll", fn);
   }, []);
 
-  /* close drawer on navigation */
   useEffect(() => { setOpen(false); }, [location.pathname]);
 
-  /* lock body scroll when drawer open */
   useEffect(() => {
     document.body.style.overflow = (isMobile && open) ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [isMobile, open]);
 
-  /* close drawer when screen grows past breakpoint */
   useEffect(() => { if (!isMobile) setOpen(false); }, [isMobile]);
 
   const isActive = useCallback(
@@ -170,10 +165,8 @@ export function Navigation() {
 
   return (
     <>
-      {/* ── Navbar ── */}
       <nav style={S.nav(scrolled)}>
 
-        {/* Logo */}
         <Link to="/" style={S.logo}>
           <motion.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.95 }} style={S.logoBox}>
             <GraduationCap size={17} color="#00c882" strokeWidth={2} />
@@ -184,7 +177,6 @@ export function Navigation() {
           </div>
         </Link>
 
-        {/* ── Desktop links ── */}
         {!isMobile && (
           <div style={S.desktopLinks}>
             {NAV_LINKS.map(({ to, label, Icon }) => {
@@ -206,7 +198,6 @@ export function Navigation() {
           </div>
         )}
 
-        {/* ── Right side: Install + (mobile) burger ── */}
         <div style={{ marginLeft: isMobile ? "auto" : 0, display: "flex", alignItems: "center", gap: 8 }}>
           <motion.a
             href={INSTALL_URL}
@@ -245,11 +236,9 @@ export function Navigation() {
         </div>
       </nav>
 
-      {/* ── Mobile drawer ── */}
       <AnimatePresence>
         {isMobile && open && (
           <>
-            {/* Backdrop */}
             <motion.div
               key="backdrop"
               initial={{ opacity: 0 }}
@@ -260,7 +249,6 @@ export function Navigation() {
               style={S.backdrop}
             />
 
-            {/* Drawer panel */}
             <motion.div
               key="drawer"
               initial={{ opacity: 0, y: -16 }}
@@ -289,7 +277,6 @@ export function Navigation() {
                 );
               })}
 
-              {/* Install CTA in drawer */}
               <div style={{ marginTop: "0.65rem", paddingTop: "0.65rem", borderTop: "1px solid rgba(0,200,130,0.1)" }}>
                 <motion.a
                   href={INSTALL_URL}
