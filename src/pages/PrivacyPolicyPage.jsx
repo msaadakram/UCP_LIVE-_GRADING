@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { motion, AnimatePresence, useScroll, useTransform, useSpring } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useSpring } from "framer-motion";
 import {
   ShieldCheck, BarChart2, Ban, Settings2, Lock, Handshake,
   Archive, Scale, Mail, CheckCircle2, AlertTriangle, ArrowLeft,
   Download, Eye, EyeOff, Fingerprint, Globe, Database, Cpu,
-  Zap, Star, Layers, ChevronRight, X, Menu, RefreshCw,
-  BookOpen, UserCheck, Trash2, LogOut, MessageSquare, Shield,
+  Zap, Star, Layers, ChevronRight, RefreshCw,
+  BookOpen, UserCheck, Trash2, LogOut, Shield, Calendar,
 } from "lucide-react";
 
 /* ─────────────────────────────────────────────
@@ -22,7 +22,6 @@ function ParticleField() {
     const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
     resize();
     window.addEventListener("resize", resize);
-
     const PARTICLE_COUNT = 80;
     const particles = Array.from({ length: PARTICLE_COUNT }, () => ({
       x: Math.random() * canvas.width,
@@ -32,7 +31,6 @@ function ParticleField() {
       r: Math.random() * 1.5 + 0.5,
       alpha: Math.random() * 0.5 + 0.1,
     }));
-
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       particles.forEach(p => {
@@ -46,7 +44,6 @@ function ParticleField() {
         ctx.fillStyle = `rgba(0,200,130,${p.alpha})`;
         ctx.fill();
       });
-      // draw connection lines
       for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
           const dx = particles[i].x - particles[j].x;
@@ -138,7 +135,189 @@ function AnimatedCounter({ target, suffix = "" }) {
 }
 
 /* ─────────────────────────────────────────────
-   CONSENT MODAL (redesigned)
+   SHIELD HERO  (improved loop + layout)
+───────────────────────────────────────────── */
+function ShieldHero() {
+  return (
+    <div style={{ position: "relative", display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: "1.5rem" }}>
+
+      {/* Outermost slow-pulse ring */}
+      <motion.div
+        animate={{ scale: [1, 1.55, 1], opacity: [0.35, 0, 0.35] }}
+        transition={{ duration: 3.6, repeat: Infinity, ease: "easeOut" }}
+        style={{
+          position: "absolute",
+          width: 130, height: 130,
+          border: "1px solid rgba(0,200,130,0.3)",
+          borderRadius: "50%",
+          pointerEvents: "none",
+        }}
+      />
+
+      {/* Middle ring */}
+      <motion.div
+        animate={{ scale: [1, 1.35, 1], opacity: [0.5, 0, 0.5] }}
+        transition={{ duration: 3.6, repeat: Infinity, ease: "easeOut", delay: 0.7 }}
+        style={{
+          position: "absolute",
+          width: 112, height: 112,
+          border: "1px solid rgba(0,200,130,0.4)",
+          borderRadius: "50%",
+          pointerEvents: "none",
+        }}
+      />
+
+      {/* Inner orbit ring — slow spin */}
+      <motion.div
+        animate={{ rotate: [0, 360] }}
+        transition={{ duration: 14, repeat: Infinity, ease: "linear" }}
+        style={{
+          position: "absolute",
+          width: 102, height: 102,
+          border: "1px dashed rgba(0,200,130,0.18)",
+          borderRadius: "50%",
+          pointerEvents: "none",
+        }}
+      />
+
+      {/* Orbit dot travelling around the ring */}
+      <motion.div
+        animate={{ rotate: [0, 360] }}
+        transition={{ duration: 4.5, repeat: Infinity, ease: "linear" }}
+        style={{ position: "absolute", width: 102, height: 102, pointerEvents: "none" }}
+      >
+        <div style={{
+          position: "absolute", top: -4, left: "50%", transform: "translateX(-50%)",
+          width: 8, height: 8, borderRadius: "50%",
+          background: "#00c882",
+          boxShadow: "0 0 10px #00c882, 0 0 20px rgba(0,200,130,0.6)",
+        }} />
+      </motion.div>
+
+      {/* Main shield box — glow breathe */}
+      <motion.div
+        animate={{
+          boxShadow: [
+            "0 0 20px rgba(0,200,130,0.25), 0 0 0px rgba(0,200,130,0)",
+            "0 0 50px rgba(0,200,130,0.55), 0 0 80px rgba(0,200,130,0.18)",
+            "0 0 20px rgba(0,200,130,0.25), 0 0 0px rgba(0,200,130,0)",
+          ],
+        }}
+        transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
+        style={{
+          position: "relative", zIndex: 1,
+          width: 88, height: 88,
+          background: "linear-gradient(145deg, rgba(0,200,130,0.2), rgba(0,200,130,0.05))",
+          border: "1.5px solid rgba(0,200,130,0.55)",
+          borderRadius: 22,
+          display: "flex", alignItems: "center", justifyContent: "center",
+        }}
+      >
+        {/* Shield icon — subtle float */}
+        <motion.div
+          animate={{ y: [0, -3, 0] }}
+          transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
+        >
+          <ShieldCheck size={40} color="#00c882" strokeWidth={1.5} />
+        </motion.div>
+
+        {/* Corner sparkles */}
+        {[
+          { top: 6,  left: 6  },
+          { top: 6,  right: 6 },
+          { bottom: 6, left: 6 },
+          { bottom: 6, right: 6 },
+        ].map((pos, i) => (
+          <motion.div
+            key={i}
+            animate={{ opacity: [0, 1, 0], scale: [0.5, 1.2, 0.5] }}
+            transition={{ duration: 2, repeat: Infinity, delay: i * 0.5, ease: "easeInOut" }}
+            style={{
+              position: "absolute", ...pos,
+              width: 4, height: 4, borderRadius: "50%",
+              background: "#00c882",
+              boxShadow: "0 0 6px #00c882",
+            }}
+          />
+        ))}
+      </motion.div>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────
+   DATE BADGE  (improved — calendar icon + loop)
+───────────────────────────────────────────── */
+function DateBadge() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12, scale: 0.92 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ delay: 0.25, type: "spring", stiffness: 260, damping: 22 }}
+      style={{
+        position: "relative",
+        zIndex: 1,
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 8,
+        background: "rgba(0,200,130,0.07)",
+        border: "1px solid rgba(0,200,130,0.28)",
+        borderRadius: 100,
+        padding: "7px 18px 7px 10px",
+        marginBottom: "1.4rem",
+        cursor: "default",
+        overflow: "hidden",
+      }}
+    >
+      {/* shimmer sweep */}
+      <motion.div
+        animate={{ x: ["-100%", "220%"] }}
+        transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut", repeatDelay: 2.4 }}
+        style={{
+          position: "absolute", inset: 0,
+          background: "linear-gradient(90deg, transparent 0%, rgba(0,200,130,0.18) 50%, transparent 100%)",
+          pointerEvents: "none",
+        }}
+      />
+
+      {/* calendar icon box */}
+      <motion.div
+        animate={{ rotate: [0, -8, 8, 0] }}
+        transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut", repeatDelay: 2 }}
+        style={{
+          width: 26, height: 26,
+          background: "rgba(0,200,130,0.14)",
+          border: "1px solid rgba(0,200,130,0.35)",
+          borderRadius: 7,
+          display: "flex", alignItems: "center", justifyContent: "center",
+          flexShrink: 0,
+        }}
+      >
+        <Calendar size={13} color="#00c882" strokeWidth={2} />
+      </motion.div>
+
+      {/* live dot */}
+      <motion.span
+        animate={{ opacity: [1, 0.2, 1], boxShadow: ["0 0 6px #00c882", "0 0 2px #00c882", "0 0 6px #00c882"] }}
+        transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+        style={{
+          width: 6, height: 6,
+          background: "#00c882",
+          borderRadius: "50%",
+          display: "inline-block",
+          flexShrink: 0,
+        }}
+      />
+
+      <span style={{ fontSize: "0.7rem", fontWeight: 800, color: "#00c882", letterSpacing: "0.1em", textTransform: "uppercase", whiteSpace: "nowrap" }}>
+        Last Updated · June 18, 2026
+      </span>
+    </motion.div>
+  );
+}
+
+/* ─────────────────────────────────────────────
+   CONSENT MODAL
 ───────────────────────────────────────────── */
 function ConsentModal({ onAccept, onDecline }) {
   const [scrolled, setScrolled] = useState(false);
@@ -160,13 +339,10 @@ function ConsentModal({ onAccept, onDecline }) {
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
       style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.9)", backdropFilter: "blur(12px)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", padding: "1rem" }}
     >
-      {/* glow */}
       <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", width: 600, height: 600, background: "radial-gradient(circle, rgba(0,200,130,0.08), transparent 65%)", pointerEvents: "none" }} />
-
       <motion.div initial={{ scale: 0.8, y: 60, opacity: 0 }} animate={{ scale: 1, y: 0, opacity: 1 }} exit={{ scale: 0.85, opacity: 0 }} transition={{ type: "spring", stiffness: 280, damping: 26 }}
         style={{ background: "linear-gradient(145deg,#060d14,#0b1622)", border: "1px solid rgba(0,200,130,0.3)", borderRadius: "20px", width: "100%", maxWidth: "500px", overflow: "hidden", boxShadow: "0 0 80px rgba(0,200,130,0.12), 0 40px 80px rgba(0,0,0,0.6)" }}
       >
-        {/* header */}
         <div style={{ padding: "1.5rem 1.75rem 1.25rem", background: "linear-gradient(135deg,rgba(0,200,130,0.08),rgba(0,200,130,0.02))", borderBottom: "1px solid rgba(0,200,130,0.12)", display: "flex", alignItems: "center", gap: 14 }}>
           <motion.div animate={{ rotate: [0, 10, -10, 0] }} transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
             style={{ width: 48, height: 48, background: "rgba(0,200,130,0.12)", border: "1.5px solid rgba(0,200,130,0.4)", borderRadius: 14, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: "0 0 20px rgba(0,200,130,0.15)" }}
@@ -338,12 +514,9 @@ function SectionCard({ id, Icon, title, color, content, items, simple, delay = 0
         transition: "border-color 250ms ease, box-shadow 300ms ease",
       }}
     >
-      {/* corner glow */}
       <div style={{ position: "absolute", top: 0, left: 0, width: 160, height: 160, background: `radial-gradient(circle at top left, ${color}10 0%, transparent 65%)`, pointerEvents: "none", transition: "opacity 300ms", opacity: hovered ? 1 : 0.5 }} />
-      {/* right-bottom glow */}
       <div style={{ position: "absolute", bottom: 0, right: 0, width: 120, height: 120, background: `radial-gradient(circle at bottom right, ${color}08 0%, transparent 65%)`, pointerEvents: "none" }} />
 
-      {/* title row */}
       <div style={{ position: "relative", zIndex: 1, display: "flex", alignItems: "center", gap: 14, marginBottom: "1.25rem" }}>
         <motion.div animate={hovered ? { scale: 1.1, rotate: 5 } : { scale: 1, rotate: 0 }} transition={{ type: "spring", stiffness: 300, damping: 20 }}
           style={{ width: 42, height: 42, background: `${color}16`, border: `1.5px solid ${color}40`, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: hovered ? `0 0 18px ${color}30` : "none", transition: "box-shadow 300ms" }}
@@ -356,7 +529,6 @@ function SectionCard({ id, Icon, title, color, content, items, simple, delay = 0
         </motion.div>
       </div>
 
-      {/* content */}
       <div style={{ position: "relative", zIndex: 1 }}>
         {content && <p style={{ fontSize: "0.875rem", lineHeight: 1.85, color: "#8899aa", margin: 0 }}>{content}</p>}
 
@@ -396,6 +568,60 @@ function SectionCard({ id, Icon, title, color, content, items, simple, delay = 0
 }
 
 /* ─────────────────────────────────────────────
+   FOOTER SECURITY ICON  (fixed — no box spin)
+───────────────────────────────────────────── */
+function FooterSecurityIcon() {
+  return (
+    <div style={{ position: "relative", display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: "1.25rem" }}>
+      {/* outer pulse ring */}
+      <motion.div
+        animate={{ scale: [1, 1.5, 1], opacity: [0.4, 0, 0.4] }}
+        transition={{ duration: 3, repeat: Infinity, ease: "easeOut" }}
+        style={{
+          position: "absolute",
+          width: 90, height: 90,
+          border: "1px solid rgba(0,200,130,0.35)",
+          borderRadius: "50%",
+          pointerEvents: "none",
+        }}
+      />
+      {/* rotating dashed ring */}
+      <motion.div
+        animate={{ rotate: [0, 360] }}
+        transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
+        style={{
+          position: "absolute",
+          width: 76, height: 76,
+          border: "1.5px dashed rgba(0,200,130,0.22)",
+          borderRadius: "50%",
+          pointerEvents: "none",
+        }}
+      />
+      {/* icon box — only glow pulses, box itself stays still */}
+      <motion.div
+        animate={{ boxShadow: ["0 0 16px rgba(0,200,130,0.25)", "0 0 40px rgba(0,200,130,0.55)", "0 0 16px rgba(0,200,130,0.25)"] }}
+        transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+        style={{
+          position: "relative", zIndex: 1,
+          width: 64, height: 64,
+          background: "rgba(0,200,130,0.1)",
+          border: "1.5px solid rgba(0,200,130,0.3)",
+          borderRadius: 16,
+          display: "flex", alignItems: "center", justifyContent: "center",
+        }}
+      >
+        <motion.div
+          animate={{ y: [0, -3, 0] }}
+          transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+        >
+          <Lock size={28} color="#00c882" strokeWidth={1.75} />
+        </motion.div>
+      </motion.div>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────
    MAIN PAGE
 ───────────────────────────────────────────── */
 export function PrivacyPolicyPage() {
@@ -407,7 +633,6 @@ export function PrivacyPolicyPage() {
 
   useEffect(() => { window.scrollTo(0, 0); }, []);
 
-  // active TOC section tracking
   useEffect(() => {
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => { if (entry.isIntersecting) setActiveToc(entry.target.id); });
@@ -447,57 +672,54 @@ export function PrivacyPolicyPage() {
       </AnimatePresence>
 
       {/* ── HERO ── */}
-      <section style={{ position: "relative", zIndex: 1, padding: "5rem 2rem 4rem", textAlign: "center", overflow: "hidden" }}>
-        {/* grid bg */}
+      <section style={{ position: "relative", zIndex: 1, padding: "clamp(3rem,8vw,5rem) clamp(1rem,5vw,2rem) clamp(2.5rem,6vw,4rem)", textAlign: "center", overflow: "hidden" }}>
         <div style={{ position: "absolute", inset: 0, backgroundImage: "linear-gradient(rgba(0,200,130,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,200,130,0.04) 1px,transparent 1px)", backgroundSize: "60px 60px", pointerEvents: "none" }} />
         <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 80% 60% at 50% 0%,rgba(0,200,130,0.07) 0%,transparent 70%)", pointerEvents: "none" }} />
 
-        {/* shield icon */}
-        <motion.div initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.1, type: "spring", stiffness: 200, damping: 18 }}
-          style={{ position: "relative", zIndex: 1, display: "inline-block", marginBottom: "1.75rem" }}
+        {/* ── Shield hero with multi-ring loop ── */}
+        <motion.div
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.1, type: "spring", stiffness: 200, damping: 18 }}
+          style={{ position: "relative", zIndex: 1 }}
         >
-          <motion.div animate={{ boxShadow: ["0 0 30px rgba(0,200,130,0.3)", "0 0 60px rgba(0,200,130,0.5)", "0 0 30px rgba(0,200,130,0.3)"] }} transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-            style={{ width: 88, height: 88, margin: "0 auto", background: "linear-gradient(145deg,rgba(0,200,130,0.18),rgba(0,200,130,0.06))", border: "1.5px solid rgba(0,200,130,0.5)", borderRadius: 22, display: "flex", alignItems: "center", justifyContent: "center" }}
-          >
-            <ShieldCheck size={40} color="#00c882" strokeWidth={1.5} />
-          </motion.div>
-          {/* ring */}
-          <motion.div animate={{ scale: [1, 1.3, 1], opacity: [0.6, 0, 0.6] }} transition={{ duration: 2.5, repeat: Infinity }}
-            style={{ position: "absolute", inset: -12, border: "1px solid rgba(0,200,130,0.25)", borderRadius: 36, pointerEvents: "none" }}
-          />
+          <ShieldHero />
         </motion.div>
 
-        {/* badge */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-          style={{ position: "relative", zIndex: 1, display: "inline-flex", alignItems: "center", gap: 7, background: "rgba(0,200,130,0.08)", border: "1px solid rgba(0,200,130,0.25)", color: "#00c882", fontSize: "0.7rem", fontWeight: 800, letterSpacing: "0.12em", textTransform: "uppercase", padding: "5px 16px", borderRadius: 100, marginBottom: "1.5rem" }}
-        >
-          <span style={{ width: 6, height: 6, background: "#00c882", borderRadius: "50%", boxShadow: "0 0 8px #00c882", display: "inline-block", animation: "ppPulse 2s ease-in-out infinite" }} />
-          Last Updated · June 18, 2026
-        </motion.div>
+        {/* ── Date badge — improved calendar icon + shimmer ── */}
+        <div style={{ position: "relative", zIndex: 1 }}>
+          <DateBadge />
+        </div>
 
-        <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25, duration: 0.7 }}
-          style={{ position: "relative", zIndex: 1, fontSize: "clamp(2.2rem,6vw,4.2rem)", fontWeight: 900, lineHeight: 1.06, letterSpacing: "-0.03em", marginBottom: "1.25rem" }}
+        <motion.h1
+          initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.7 }}
+          style={{ position: "relative", zIndex: 1, fontSize: "clamp(2rem,6vw,4.2rem)", fontWeight: 900, lineHeight: 1.06, letterSpacing: "-0.03em", marginBottom: "1.25rem" }}
         >
           <span style={{ color: "#e2e8f0" }}>Your Privacy,<br /></span>
           <span style={{ background: "linear-gradient(135deg,#00c882 0%,#00e5c0 50%,#00b8e6 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>Our Promise.</span>
         </motion.h1>
 
-        <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}
-          style={{ position: "relative", zIndex: 1, fontSize: "1.05rem", lineHeight: 1.75, color: "#55677a", maxWidth: "52ch", margin: "0 auto 2.5rem" }}
+        <motion.p
+          initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.38 }}
+          style={{ position: "relative", zIndex: 1, fontSize: "clamp(0.88rem,2vw,1.05rem)", lineHeight: 1.75, color: "#55677a", maxWidth: "52ch", margin: "0 auto 2.5rem" }}
         >
           UCP Live Grading is built on transparency. This page explains exactly what data the extension accesses, how it's used, and how you stay in complete control.
         </motion.p>
 
         {/* trust badges */}
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }}
-          style={{ position: "relative", zIndex: 1, display: "flex", justifyContent: "center", flexWrap: "wrap", gap: 10 }}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.46 }}
+          style={{ position: "relative", zIndex: 1, display: "flex", justifyContent: "center", flexWrap: "wrap", gap: 8 }}
         >
           {[
-            { Icon: Lock, label: "TLS Encrypted", color: "#00c882" },
-            { Icon: Ban, label: "No Data Sales", color: "#ff6b6b" },
-            { Icon: ShieldCheck, label: "GDPR Aligned", color: "#60a5fa" },
-            { Icon: Settings2, label: "Opt-out Anytime", color: "#a78bfa" },
-            { Icon: Globe, label: "UCP Only", color: "#fbbf24" },
+            { Icon: Lock,       label: "TLS Encrypted",  color: "#00c882" },
+            { Icon: Ban,        label: "No Data Sales",   color: "#ff6b6b" },
+            { Icon: ShieldCheck,label: "GDPR Aligned",    color: "#60a5fa" },
+            { Icon: Settings2,  label: "Opt-out Anytime", color: "#a78bfa" },
+            { Icon: Globe,      label: "UCP Only",        color: "#fbbf24" },
           ].map(({ Icon, label, color }) => (
             <motion.div key={label} whileHover={{ scale: 1.06, y: -2 }}
               style={{ display: "flex", alignItems: "center", gap: 7, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 100, padding: "6px 14px", fontSize: "0.78rem", color: "#8899aa", cursor: "default" }}
@@ -510,7 +732,7 @@ export function PrivacyPolicyPage() {
       </section>
 
       {/* ── STATS ── */}
-      <section style={{ position: "relative", zIndex: 1, maxWidth: 900, margin: "0 auto", padding: "0 1.5rem 3rem" }}>
+      <section style={{ position: "relative", zIndex: 1, maxWidth: 900, margin: "0 auto", padding: "0 clamp(1rem,4vw,1.5rem) 3rem" }}>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(180px,1fr))", gap: 14 }}>
           {STATS.map(({ Icon, value, suffix, label }, i) => (
             <motion.div key={label} initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
@@ -530,10 +752,12 @@ export function PrivacyPolicyPage() {
       </section>
 
       {/* ── BODY: TOC + SECTIONS ── */}
-      <div style={{ position: "relative", zIndex: 1, maxWidth: 1100, margin: "0 auto", padding: "0 1.5rem 5rem", display: "grid", gridTemplateColumns: "220px 1fr", gap: "2.5rem", alignItems: "start" }} className="pp-body-grid">
-
-        {/* sticky TOC */}
-        <div style={{ position: "sticky", top: 80 }} className="pp-toc">
+      <div
+        className="pp-body-grid"
+        style={{ position: "relative", zIndex: 1, maxWidth: 1100, margin: "0 auto", padding: "0 clamp(1rem,4vw,1.5rem) 5rem", display: "grid", gridTemplateColumns: "220px 1fr", gap: "2.5rem", alignItems: "start" }}
+      >
+        {/* sticky TOC — desktop only */}
+        <div className="pp-toc" style={{ position: "sticky", top: 80 }}>
           <motion.div initial={{ opacity: 0, x: -24 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5, duration: 0.6 }}
             style={{ background: "rgba(8,14,24,0.95)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 16, padding: "1.25rem", backdropFilter: "blur(16px)" }}
           >
@@ -555,8 +779,6 @@ export function PrivacyPolicyPage() {
                 );
               })}
             </ul>
-
-            {/* mini actions */}
             <div style={{ marginTop: "1.5rem", paddingTop: "1rem", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
               <motion.a href="https://chromewebstore.google.com/detail/jffoifnchlblakelloghlmjldkpniglj?utm_source=item-share-cb" target="_blank" rel="noopener noreferrer"
                 whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
@@ -582,20 +804,21 @@ export function PrivacyPolicyPage() {
       </div>
 
       {/* ── FOOTER CTA ── */}
-      <motion.section initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }}
-        style={{ position: "relative", zIndex: 1, overflow: "hidden", borderTop: "1px solid rgba(0,200,130,0.1)", padding: "4rem 2rem 5rem", textAlign: "center" }}
+      <motion.section
+        initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }} transition={{ duration: 0.7 }}
+        style={{ position: "relative", zIndex: 1, overflow: "hidden", borderTop: "1px solid rgba(0,200,130,0.1)", padding: "clamp(2.5rem,6vw,4rem) clamp(1rem,5vw,2rem) clamp(3rem,8vw,5rem)", textAlign: "center" }}
       >
         <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 70% 70% at 50% 50%,rgba(0,200,130,0.05) 0%,transparent 70%)", pointerEvents: "none" }} />
         <div style={{ position: "relative", zIndex: 1, maxWidth: 560, margin: "0 auto" }}>
-          <motion.div animate={{ rotate: [0, 360] }} transition={{ duration: 20, repeat: Infinity, ease: "linear" }} style={{ display: "inline-block", marginBottom: "1.25rem" }}>
-            <div style={{ width: 64, height: 64, background: "rgba(0,200,130,0.1)", border: "1.5px solid rgba(0,200,130,0.3)", borderRadius: 16, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <Lock size={28} color="#00c882" strokeWidth={1.75} />
-            </div>
-          </motion.div>
-          <h3 style={{ fontSize: "2rem", fontWeight: 900, color: "#e2e8f0", letterSpacing: "-0.02em", marginBottom: "0.75rem" }}>Ready to Install?</h3>
+          {/* ── Improved footer security icon ── */}
+          <FooterSecurityIcon />
+          <h3 style={{ fontSize: "clamp(1.5rem,4vw,2rem)", fontWeight: 900, color: "#e2e8f0", letterSpacing: "-0.02em", marginBottom: "0.75rem" }}>Ready to Install?</h3>
           <p style={{ fontSize: "0.93rem", color: "#55677a", lineHeight: 1.75, marginBottom: "2rem" }}>By installing UCP Live Grading, you agree to this Privacy Policy. Your data stays secure and under your control.</p>
           <div style={{ display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap" }}>
-            <motion.a href="https://chromewebstore.google.com/detail/jffoifnchlblakelloghlmjldkpniglj?utm_source=item-share-cb" target="_blank" rel="noopener noreferrer"
+            <motion.a
+              href="https://chromewebstore.google.com/detail/jffoifnchlblakelloghlmjldkpniglj?utm_source=item-share-cb"
+              target="_blank" rel="noopener noreferrer"
               whileHover={{ scale: 1.04, y: -3 }} whileTap={{ scale: 0.97 }}
               style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "linear-gradient(135deg,#00c882,#00a86b)", color: "#000", fontSize: "0.93rem", fontWeight: 800, padding: "13px 26px", borderRadius: 12, textDecoration: "none", boxShadow: "0 0 40px rgba(0,200,130,0.35)" }}
             >
@@ -611,10 +834,9 @@ export function PrivacyPolicyPage() {
       </motion.section>
 
       <style>{`
-        @keyframes ppPulse { 0%,100%{opacity:1;box-shadow:0 0 8px #00c882;}50%{opacity:0.3;box-shadow:0 0 4px #00c882;} }
-        @media(max-width:768px){
-          .pp-body-grid{grid-template-columns:1fr !important;}
-          .pp-toc{display:none !important;}
+        @media (max-width: 768px) {
+          .pp-body-grid { grid-template-columns: 1fr !important; }
+          .pp-toc { display: none !important; }
         }
       `}</style>
     </div>
