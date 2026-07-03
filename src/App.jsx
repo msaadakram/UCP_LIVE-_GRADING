@@ -4,6 +4,7 @@ import { Navigation } from "./components/Navigation";
 import { HomePage } from "./pages/HomePage";
 import { DonatePage } from "./pages/DonatePage";
 import { PrivacyPolicyPage } from "./pages/PrivacyPolicyPage";
+import { LeaderboardPage } from "./pages/LeaderboardPage";
 import { NotFoundPage } from "./pages/NotFoundPage";
 
 function App() {
@@ -11,10 +12,11 @@ function App() {
     <BrowserRouter>
       <Navigation />
       <Routes>
-        <Route path="/"        element={<HomePage />} />
-        <Route path="/donate"  element={<DonatePage />} />
-        <Route path="/privacy" element={<PrivacyPolicyPage />} />
-        <Route path="*"        element={<NotFoundPage />} />
+        <Route path="/"            element={<HomePage />} />
+        <Route path="/donate"      element={<DonatePage />} />
+        <Route path="/privacy"     element={<PrivacyPolicyPage />} />
+        <Route path="/leaderboard" element={<LeaderboardPage />} />
+        <Route path="*"            element={<NotFoundPage />} />
       </Routes>
       <Toaster />
     </BrowserRouter>

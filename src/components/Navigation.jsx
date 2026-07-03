@@ -3,10 +3,9 @@ import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Home, ShieldCheck, HeartHandshake,
-  Download, Menu, X, GraduationCap,
+  Download, Menu, X, GraduationCap, BarChart3,
 } from "lucide-react";
 
-/* ─── responsive hook ─────────────────────────────── */
 function useIsMobile(breakpoint = 768) {
   const [isMobile, setIsMobile] = useState(
     () => typeof window !== "undefined" && window.innerWidth <= breakpoint
@@ -21,15 +20,15 @@ function useIsMobile(breakpoint = 768) {
 }
 
 const NAV_LINKS = [
-  { to: "/",        label: "Home",    Icon: Home },
-  { to: "/privacy", label: "Privacy", Icon: ShieldCheck },
-  { to: "/donate",  label: "Support", Icon: HeartHandshake },
+  { to: "/",            label: "Home",        Icon: Home },
+  { to: "/leaderboard", label: "Leaderboard", Icon: BarChart3 },
+  { to: "/privacy",     label: "Privacy",     Icon: ShieldCheck },
+  { to: "/donate",      label: "Support",     Icon: HeartHandshake },
 ];
 
 const INSTALL_URL =
   "https://chromewebstore.google.com/detail/jffoifnchlblakelloghlmjldkpniglj?utm_source=item-share-cb";
 
-/* ─── styles (no external CSS needed) ─────────────── */
 const S = {
   nav: (scrolled) => ({
     position: "fixed", top: 0, left: 0, right: 0,
@@ -59,7 +58,6 @@ const S = {
   logoText: { lineHeight: 1.15 },
   logoTitle: { fontSize: "0.82rem", fontWeight: 800, color: "#e2e8f0", letterSpacing: "0.03em" },
   logoSub: { fontSize: "0.6rem", fontWeight: 600, color: "#00c882", letterSpacing: "0.12em", textTransform: "uppercase" },
-
   desktopLinks: {
     display: "flex", alignItems: "center", gap: "0.2rem",
     marginLeft: "auto", marginRight: "0.75rem",
@@ -79,7 +77,6 @@ const S = {
     width: 4, height: 4, background: "#00c882",
     borderRadius: "50%", boxShadow: "0 0 6px #00c882",
   },
-
   installBtn: {
     display: "inline-flex", alignItems: "center", gap: 6,
     background: "linear-gradient(135deg,#00c882,#00a86b)",
@@ -89,7 +86,6 @@ const S = {
     boxShadow: "0 0 14px rgba(0,200,130,0.25)",
     flexShrink: 0, minHeight: 36, whiteSpace: "nowrap",
   },
-
   burger: {
     display: "flex", alignItems: "center", justifyContent: "center",
     marginLeft: "0.65rem",
@@ -100,7 +96,6 @@ const S = {
     minHeight: 38, minWidth: 38,
     flexShrink: 0,
   },
-
   backdrop: {
     position: "fixed", inset: 0, top: 60,
     background: "rgba(0,0,0,0.55)",
@@ -166,7 +161,6 @@ export function Navigation() {
   return (
     <>
       <nav style={S.nav(scrolled)}>
-
         <Link to="/" style={S.logo}>
           <motion.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.95 }} style={S.logoBox}>
             <GraduationCap size={17} color="#00c882" strokeWidth={2} />
@@ -248,7 +242,6 @@ export function Navigation() {
               onClick={() => setOpen(false)}
               style={S.backdrop}
             />
-
             <motion.div
               key="drawer"
               initial={{ opacity: 0, y: -16 }}
@@ -276,7 +269,6 @@ export function Navigation() {
                   </motion.div>
                 );
               })}
-
               <div style={{ marginTop: "0.65rem", paddingTop: "0.65rem", borderTop: "1px solid rgba(0,200,130,0.1)" }}>
                 <motion.a
                   href={INSTALL_URL}
