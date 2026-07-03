@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Home, ShieldCheck, HeartHandshake,
-  Download, Menu, X, GraduationCap, BarChart3, BookOpen,
+  Download, Menu, X, GraduationCap, BookOpen,
 } from "lucide-react";
 
 function useIsMobile(breakpoint = 768) {
@@ -20,11 +20,10 @@ function useIsMobile(breakpoint = 768) {
 }
 
 const NAV_LINKS = [
-  { to: "/",            label: "Home",        Icon: Home },
-  { to: "/leaderboard", label: "Leaderboard", Icon: BarChart3 },
-  { to: "/resources",   label: "Resources",   Icon: BookOpen },
-  { to: "/privacy",     label: "Privacy",     Icon: ShieldCheck },
-  { to: "/donate",      label: "Support",     Icon: HeartHandshake },
+  { to: "/",          label: "Home",      Icon: Home },
+  { to: "/resources", label: "Resources", Icon: BookOpen },
+  { to: "/privacy",   label: "Privacy",   Icon: ShieldCheck },
+  { to: "/donate",    label: "Support",   Icon: HeartHandshake },
 ];
 
 const INSTALL_URL =

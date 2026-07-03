@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { Github, Shield, Zap, BarChart3, Heart, Lock, Code, Mail, BookOpen } from "lucide-react";
+import { Github, Shield, Zap, Heart, Lock, Code, Mail, BookOpen } from "lucide-react";
 import { useEffect, useRef } from "react";
 
 export function Footer() {
@@ -37,19 +37,18 @@ export function Footer() {
 
   const links = [
     { group: "Product", items: [
-      { to: "/",            label: "Home",         icon: Zap },
-      { to: "/leaderboard", label: "Leaderboard",  icon: BarChart3 },
-      { to: "/resources",   label: "Resources",    icon: BookOpen },
-      { to: "/donate",      label: "Support Us",   icon: Heart },
+      { to: "/",          label: "Home",       icon: Zap },
+      { to: "/resources", label: "Resources",  icon: BookOpen },
+      { to: "/donate",    label: "Support Us", icon: Heart },
     ]},
     { group: "Legal", items: [
-      { to: "/privacy",     label: "Privacy Policy",icon: Lock },
-      { to: "/privacy",     label: "Data Security", icon: Shield },
+      { to: "/privacy",   label: "Privacy Policy", icon: Lock },
+      { to: "/privacy",   label: "Data Security",  icon: Shield },
     ]},
     { group: "Developer", items: [
-      { href: "https://github.com/msaadakram",           label: "GitHub",      icon: Github },
-      { href: "mailto:ucplivegrading@support.com",       label: "Contact",     icon: Mail },
-      { to: "/",                                         label: "Source Code", icon: Code },
+      { href: "https://github.com/msaadakram",     label: "GitHub",      icon: Github },
+      { href: "mailto:ucplivegrading@support.com", label: "Contact",     icon: Mail },
+      { to: "/",                                   label: "Source Code", icon: Code },
     ]},
   ];
 
@@ -72,7 +71,7 @@ export function Footer() {
               </div>
             </div>
             <p style={{ fontSize:"0.83rem",lineHeight:1.75,color:"rgba(120,200,160,0.6)",maxWidth:"32ch",marginBottom:"1.25rem" }}>
-              Real-time grade tracking, leaderboards &amp; free study resources for UCP students.
+              Real-time grade tracking &amp; free study resources for UCP students.
             </p>
             <div style={{ display:"flex",gap:"0.6rem" }}>
               {[Github, Mail, Code].map((Icon, i) => (
