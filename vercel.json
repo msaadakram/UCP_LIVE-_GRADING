@@ -2,33 +2,37 @@
     "buildCommand": "npm run build",
     "outputDirectory": "dist",
     "framework": "vite",
-    "rewrites": [
-        { "source": "/sitemap.xml", "destination": "/sitemap.xml" },
-        { "source": "/robots.txt",  "destination": "/robots.txt"  },
-        { "source": "/(.*)",        "destination": "/"             }
-    ],
-    "headers": [
+    "routes": [
         {
-            "source": "/sitemap.xml",
-            "headers": [
-                { "key": "Content-Type", "value": "application/xml; charset=UTF-8" },
-                { "key": "Cache-Control", "value": "public, max-age=86400" }
-            ]
+            "src": "/sitemap.xml",
+            "headers": {
+                "Content-Type": "application/xml; charset=UTF-8",
+                "Cache-Control": "public, max-age=86400"
+            },
+            "dest": "/sitemap.xml"
         },
         {
-            "source": "/robots.txt",
-            "headers": [
-                { "key": "Content-Type", "value": "text/plain" }
-            ]
+            "src": "/robots.txt",
+            "headers": { "Content-Type": "text/plain" },
+            "dest": "/robots.txt"
         },
         {
-            "source": "/(.*)",
-            "headers": [
-                { "key": "X-Content-Type-Options", "value": "nosniff" },
-                { "key": "X-Frame-Options",        "value": "DENY" },
-                { "key": "X-XSS-Protection",       "value": "1; mode=block" },
-                { "key": "Referrer-Policy",         "value": "strict-origin-when-cross-origin" }
-            ]
+            "src": "/assets/(.*)",
+            "dest": "/assets/$1"
+        },
+        {
+            "src": "/(.*\\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot))",
+            "dest": "/$1"
+        },
+        {
+            "src": "/(.*)",
+            "headers": {
+                "X-Content-Type-Options": "nosniff",
+                "X-Frame-Options": "DENY",
+                "X-XSS-Protection": "1; mode=block",
+                "Referrer-Policy": "strict-origin-when-cross-origin"
+            },
+            "dest": "/index.html"
         }
     ]
 }
